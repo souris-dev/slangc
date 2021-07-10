@@ -1,0 +1,1 @@
+Note: The ANTLR4 jar file should be put here inside the tools directory (for example: antlr-4.9.2-complete.jar). Be sure to fix the version in the CMakeLists.txt file too in the project root directory in case the version is different from 4.9.2.
