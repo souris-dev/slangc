@@ -7,8 +7,8 @@ grammar SlangGrammar;
 
 // Lexer Grammar
 
-PROGSTART: '<%>';
-PROGEND: '<<>>';
+PROGSTART: '<SLANG>';
+PROGEND: '</SLANG>';
 
 LPAREN: '(';
 RPAREN: ')';
@@ -53,7 +53,7 @@ RIGHTARROW: '->';
 IF: 'if';
 ELSE: 'else';
 FUNCDEF: 'introducing';
-VARDEF: 'var';
+VARDEF: 'define';
 COLON: ':';
 STATEMENTEND: ';';
 WHILE: 'while';

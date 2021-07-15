@@ -1,7 +1,7 @@
 token literal names:
 null
-'<%>'
-'<<>>'
+'<SLANG>'
+'</SLANG>'
 '('
 ')'
 '{'
@@ -37,7 +37,7 @@ null
 'if'
 'else'
 'introducing'
-'var'
+'define'
 ':'
 ';'
 'while'

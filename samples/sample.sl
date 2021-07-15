@@ -1,11 +1,11 @@
-startfile
+<SLANG>
 
 \\* This is a comment *\\
-var initCounter: int = 5;
-var lol: string = "Result is: ";
+define initCounter: int = 5;
+define lol: string = "Result is: ";
 
 introducing main(var1: int, var2: string) {
-    var sum: int = 0;
+    define sum: int = 0;
 
     while (var1 < 4) {
         sum = sum + 1;
@@ -15,7 +15,7 @@ introducing main(var1: int, var2: string) {
     return sum;
 } -> int
 
-var res: int = (initCounter, lol) -> main;
+define res: int = (initCounter, lol) -> main;
 (res) -> print;
 
-endfile
+</SLANG>
