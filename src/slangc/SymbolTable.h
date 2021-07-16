@@ -11,33 +11,34 @@
 #include <vector>
 #include <memory>
 
-enum Scope { BLOCK_BODY, FUNCTION_PARAM, GLOBAL };
-
 class TypeDecl {
 
 };
 
 class Symbol {
-private:
+public:
     std::string name;
-    Scope scope = Scope::GLOBAL;
     std::vector<TypeDecl> typeCollection;
 
-public:
-    Symbol(): scope(Scope::GLOBAL) {}
-    Symbol(std::string name, Scope scope): name(std::move(name)), scope(scope) {}
+    Symbol() = default;
+    explicit Symbol(std::string name);
     void addToTypeCollection(TypeDecl typeDecl);
 };
 
 class SymbolTable {
 private:
-    std::unordered_map<std::string, Symbol> tableData;
+    std::vector<std::unordered_map<std::string, Symbol>> symbolScope;
+    int currentScope = 0;
+
+    void destroyLastScopeVars();
 
 public:
     bool insert(const std::string& name, Symbol symbol);
-    std::shared_ptr<Symbol> get(const std::string& name);
+    void incrementScope();
+    void decrementScope();
+    void setCurrentScope(const int& scopeVal);
+    std::shared_ptr<Symbol> lookup(const std::string& name);
 
-    [[maybe_unused]] std::shared_ptr<std::unordered_map<std::string, Symbol>> getInternalTablePtr();
     [[maybe_unused]] std::shared_ptr<Symbol> getOrCreate(const std::string&);
     [[maybe_unused]] bool deleteSymbol(const std::string& name);
     [[maybe_unused]] bool modify(const std::string& name, Symbol replaceByThisSymbol);

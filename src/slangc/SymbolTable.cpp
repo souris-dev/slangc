@@ -5,26 +5,29 @@
 #include "SymbolTable.h"
 
 bool SymbolTable::insert(const std::string& name, Symbol symbol) {
-    if (tableData.count(name) > 0) {
+    auto currentTable = symbolScope[currentScope];
+    if (currentTable.count(name) > 0) {
         // Entry exists already so return false
         return false;
     }
 
-    tableData[name] = std::move(symbol);
+    currentTable[name] = std::move(symbol);
     return true;
 }
 
 std::shared_ptr<Symbol> SymbolTable::getOrCreate(const std::string& name) {
-    if (tableData.count(name) > 0) {
-        tableData[name] = Symbol("", BLOCK_BODY);
+    auto currentTable = symbolScope[currentScope];
+    if (currentTable.count(name) > 0) {
+        currentTable[name] = Symbol("");
     }
 
-    return std::make_shared<Symbol>(tableData[name]);
+    return std::make_shared<Symbol>(currentTable[name]);
 }
 
 bool SymbolTable::deleteSymbol(const std::string& name) {
-    if (tableData.count(name) > 0) {
-        tableData.erase(name);
+    auto currentTable = symbolScope[currentScope];
+    if (currentTable.count(name) > 0) {
+        currentTable.erase(name);
         return true;
     }
 
@@ -32,21 +35,62 @@ bool SymbolTable::deleteSymbol(const std::string& name) {
 }
 
 bool SymbolTable::modify(const std::string& name, Symbol replaceByThisSymbol) {
-    if (tableData.count(name) > 0) {
-        tableData[name] = std::move(replaceByThisSymbol);
+    auto currentTable = symbolScope[currentScope];
+    if (currentTable.count(name) > 0) {
+        currentTable[name] = std::move(replaceByThisSymbol);
         return true;
     }
 
     return false;
 }
 
-std::shared_ptr<Symbol> SymbolTable::get(const std::string& name) {
-    return std::make_shared<Symbol>(tableData[name]);
+std::shared_ptr<Symbol> SymbolTable::lookup(const std::string& name) {
+    /* Search for a symbol till you find it in a scope */
+    int tempScope = currentScope;
+
+    auto currentTable = symbolScope[tempScope];
+    while (currentTable.count(name) != 0 && tempScope >= 0) {
+        tempScope--;
+        currentTable = symbolScope[tempScope];
+    }
+
+    /* Either the present tempScope should have that identifier here, otherwise tempScope < 0 */
+    if (tempScope < 0) {
+        return nullptr;
+    }
+    else {
+        return std::make_shared<Symbol>(currentTable[name]);
+    }
 }
 
-std::shared_ptr<std::unordered_map<std::string, Symbol>> SymbolTable::getInternalTablePtr() {
-    return std::make_shared<std::unordered_map<std::string, Symbol>>(tableData);
+void SymbolTable::incrementScope() {
+    if (currentScope == (symbolScope.size() - 1)) {
+        std::unordered_map<std::string, Symbol> newTable;
+        symbolScope.push_back(newTable);
+        currentScope++;
+    }
+    currentScope++;
 }
+
+void SymbolTable::decrementScope() {
+    if (currentScope != 0) {
+        destroyLastScopeVars();
+        currentScope--;
+    }
+}
+
+void SymbolTable::setCurrentScope(const int& scopeVal) {
+    if (scopeVal < symbolScope.size() - 1 && scopeVal >= 0) {
+        currentScope = scopeVal;
+    }
+}
+
+void SymbolTable::destroyLastScopeVars() {
+    /* TODO: CodeGen - deallocate these variables too */
+    symbolScope.pop_back();
+}
+
+Symbol::Symbol(std::string name): name(std::move(name)) {}
 
 void Symbol::addToTypeCollection(TypeDecl typeDecl) {
     typeCollection.push_back(typeDecl);
