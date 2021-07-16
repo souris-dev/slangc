@@ -11,37 +11,29 @@
 #include <vector>
 #include <memory>
 
-class TypeDecl {
-
-};
-
-class Symbol {
-public:
-    std::string name;
-    std::vector<TypeDecl> typeCollection;
-
-    Symbol() = default;
-    explicit Symbol(std::string name);
-    void addToTypeCollection(TypeDecl typeDecl);
-};
+#include "Symbol.h"
 
 class SymbolTable {
 private:
-    std::vector<std::unordered_map<std::string, Symbol>> symbolScope;
+    std::vector<std::unordered_map<std::string, std::shared_ptr<Symbol>>> symbolScope;
     int currentScope = 0;
 
     void destroyLastScopeVars();
 
 public:
-    bool insert(const std::string& name, Symbol symbol);
-    void incrementScope();
-    void decrementScope();
-    void setCurrentScope(const int& scopeVal);
-    std::shared_ptr<Symbol> lookup(const std::string& name);
+    bool insert(const std::string &name, std::shared_ptr<Symbol> symbol);
 
-    [[maybe_unused]] std::shared_ptr<Symbol> getOrCreate(const std::string&);
-    [[maybe_unused]] bool deleteSymbol(const std::string& name);
-    [[maybe_unused]] bool modify(const std::string& name, Symbol replaceByThisSymbol);
+    void incrementScope();
+
+    void decrementScope();
+
+    void setCurrentScope(const int &scopeVal);
+
+    std::shared_ptr<Symbol> lookup(const std::string &name);
+
+    [[maybe_unused]] bool deleteSymbol(const std::string &name);
+
+    [[maybe_unused]] bool modify(const std::string &name, std::shared_ptr<Symbol> replaceByThisSymbol);
 };
 
 

@@ -43,6 +43,11 @@ LOGICALNOT: ('no' | '!!');
 TRUE: ('true' | 'yes' | 'True' | 'TRUE');
 FALSE: ('false' | 'nope' | 'False' | 'FALSE');
 
+IF: 'if';
+ELSE: 'else';
+FUNCDEF: 'introducing';
+VARDEF: ('bro,' | 'sis,' | 'def' | 'var');
+
 BINAND: '&';
 BINOR: '|';
 BINXOR: '|!';
@@ -50,10 +55,6 @@ BINNOT: '!';
 
 RIGHTARROW: '->';
 
-IF: 'if';
-ELSE: 'else';
-FUNCDEF: 'introducing';
-VARDEF: 'define';
 COLON: ':';
 STATEMENTEND: ';';
 WHILE: 'while';

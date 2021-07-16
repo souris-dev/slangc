@@ -4,7 +4,7 @@
 
 #include "SymbolTable.h"
 
-bool SymbolTable::insert(const std::string& name, Symbol symbol) {
+bool SymbolTable::insert(const std::string &name, std::shared_ptr<Symbol> symbol) {
     auto currentTable = symbolScope[currentScope];
     if (currentTable.count(name) > 0) {
         // Entry exists already so return false
@@ -15,16 +15,7 @@ bool SymbolTable::insert(const std::string& name, Symbol symbol) {
     return true;
 }
 
-std::shared_ptr<Symbol> SymbolTable::getOrCreate(const std::string& name) {
-    auto currentTable = symbolScope[currentScope];
-    if (currentTable.count(name) > 0) {
-        currentTable[name] = Symbol("");
-    }
-
-    return std::make_shared<Symbol>(currentTable[name]);
-}
-
-bool SymbolTable::deleteSymbol(const std::string& name) {
+bool SymbolTable::deleteSymbol(const std::string &name) {
     auto currentTable = symbolScope[currentScope];
     if (currentTable.count(name) > 0) {
         currentTable.erase(name);
@@ -34,17 +25,7 @@ bool SymbolTable::deleteSymbol(const std::string& name) {
     return false;
 }
 
-bool SymbolTable::modify(const std::string& name, Symbol replaceByThisSymbol) {
-    auto currentTable = symbolScope[currentScope];
-    if (currentTable.count(name) > 0) {
-        currentTable[name] = std::move(replaceByThisSymbol);
-        return true;
-    }
-
-    return false;
-}
-
-std::shared_ptr<Symbol> SymbolTable::lookup(const std::string& name) {
+std::shared_ptr<Symbol> SymbolTable::lookup(const std::string &name) {
     /* Search for a symbol till you find it in a scope */
     int tempScope = currentScope;
 
@@ -57,15 +38,14 @@ std::shared_ptr<Symbol> SymbolTable::lookup(const std::string& name) {
     /* Either the present tempScope should have that identifier here, otherwise tempScope < 0 */
     if (tempScope < 0) {
         return nullptr;
-    }
-    else {
-        return std::make_shared<Symbol>(currentTable[name]);
+    } else {
+        return currentTable[name];
     }
 }
 
 void SymbolTable::incrementScope() {
     if (currentScope == (symbolScope.size() - 1)) {
-        std::unordered_map<std::string, Symbol> newTable;
+        std::unordered_map<std::string, std::shared_ptr<Symbol>> newTable;
         symbolScope.push_back(newTable);
         currentScope++;
     }
@@ -79,7 +59,7 @@ void SymbolTable::decrementScope() {
     }
 }
 
-void SymbolTable::setCurrentScope(const int& scopeVal) {
+void SymbolTable::setCurrentScope(const int &scopeVal) {
     if (scopeVal < symbolScope.size() - 1 && scopeVal >= 0) {
         currentScope = scopeVal;
     }
@@ -90,8 +70,12 @@ void SymbolTable::destroyLastScopeVars() {
     symbolScope.pop_back();
 }
 
-Symbol::Symbol(std::string name): name(std::move(name)) {}
+bool SymbolTable::modify(const std::string &name, std::shared_ptr<Symbol> replaceByThisSymbol) {
+    auto currentTable = symbolScope[currentScope];
+    if (currentTable.count(name) > 0) {
+        currentTable[name] = std::move(replaceByThisSymbol);
+        return true;
+    }
 
-void Symbol::addToTypeCollection(TypeDecl typeDecl) {
-    typeCollection.push_back(typeDecl);
+    return false;
 }

@@ -9,7 +9,7 @@
 
 class DeclarationVisitor: public SlangGrammarBaseVisitor {
 public:
-    override void
+    DeclarationVisitor() = default;
 };
 
 
