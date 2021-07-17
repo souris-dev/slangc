@@ -29,15 +29,39 @@ public:
 
     virtual antlrcpp::Any visitReturnStmt(SlangGrammarParser::ReturnStmtContext *context) = 0;
 
-    virtual antlrcpp::Any visitAssignStmt(SlangGrammarParser::AssignStmtContext *context) = 0;
+    virtual antlrcpp::Any visitExprAssign(SlangGrammarParser::ExprAssignContext *context) = 0;
 
-    virtual antlrcpp::Any visitExpr(SlangGrammarParser::ExprContext *context) = 0;
+    virtual antlrcpp::Any visitBooleanExprAssign(SlangGrammarParser::BooleanExprAssignContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprParen(SlangGrammarParser::ExprParenContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprPlus(SlangGrammarParser::ExprPlusContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprModulo(SlangGrammarParser::ExprModuloContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprMinus(SlangGrammarParser::ExprMinusContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprString(SlangGrammarParser::ExprStringContext *context) = 0;
+
+    virtual antlrcpp::Any visitUnaryMinus(SlangGrammarParser::UnaryMinusContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprDecint(SlangGrammarParser::ExprDecintContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprDivide(SlangGrammarParser::ExprDivideContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprMultiply(SlangGrammarParser::ExprMultiplyContext *context) = 0;
+
+    virtual antlrcpp::Any visitExprFunctionCall(SlangGrammarParser::ExprFunctionCallContext *context) = 0;
 
     virtual antlrcpp::Any visitDeclStmt(SlangGrammarParser::DeclStmtContext *context) = 0;
 
     virtual antlrcpp::Any visitTypeName(SlangGrammarParser::TypeNameContext *context) = 0;
 
-    virtual antlrcpp::Any visitDeclAssignStmt(SlangGrammarParser::DeclAssignStmtContext *context) = 0;
+    virtual antlrcpp::Any visitNormalDeclAssignStmt(SlangGrammarParser::NormalDeclAssignStmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanDeclAssignStmt(SlangGrammarParser::BooleanDeclAssignStmtContext *context) = 0;
 
     virtual antlrcpp::Any visitBlock(SlangGrammarParser::BlockContext *context) = 0;
 

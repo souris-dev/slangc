@@ -21,6 +21,7 @@ PLUS: '+';
 MINUS: '-';
 DIVIDE: '/';
 MULT: '*';
+MODULO: '%';
 EQUAL: '=';
 
 LT: '<';
@@ -46,7 +47,7 @@ FALSE: ('false' | 'nope' | 'False' | 'FALSE');
 IF: 'if';
 ELSE: 'else';
 FUNCDEF: 'introducing';
-VARDEF: ('bro,' | 'sis,' | 'def' | 'var');
+VARDEF: ('bro,');
 
 BINAND: '&';
 BINOR: '|';
@@ -92,21 +93,26 @@ statement: (declStmt | assignStmt | declAssignStmt | functionCall | returnStmt) 
 
 returnStmt: RETURN expr | RETURN;
 
-assignStmt: IDENTIFIER EQUAL expr;
+assignStmt: IDENTIFIER EQUAL expr #exprAssign
+          | IDENTIFIER EQUAL booleanExpr #booleanExprAssign;
 
-expr: expr DIVIDE expr
-    | expr MULT expr
-    | expr PLUS expr
-    | expr MINUS expr
-    | LPAREN expr RPAREN
-    | MINUS expr
-    | booleanExpr
-    | IDENTIFIER | DECINT | STRING | functionCall;
+expr: MINUS expr #unaryMinus
+    | expr DIVIDE expr #exprDivide
+    | expr MULT expr #exprMultiply
+    | expr MODULO expr #exprModulo
+    | expr PLUS expr #exprPlus
+    | expr MINUS expr #exprMinus
+    | LPAREN expr RPAREN #exprParen
+    | IDENTIFIER #exprIdentifier
+    | DECINT #exprDecint
+    | STRING #exprString
+    | functionCall #exprFunctionCall;
 
 declStmt: VARDEF IDENTIFIER COLON typeName;
 typeName: INTTYPE | STRINGTYPE | VOIDTYPE | BOOLTYPE;
 
-declAssignStmt: VARDEF IDENTIFIER COLON typeName EQUAL expr;
+declAssignStmt: VARDEF IDENTIFIER COLON typeName EQUAL expr #normalDeclAssignStmt
+              | VARDEF IDENTIFIER COLON typeName EQUAL booleanExpr #booleanDeclAssignStmt;
 
 block: LCURLYBR RCURLYBR
      | LCURLYBR statements RCURLYBR;
@@ -119,10 +125,10 @@ ifStmt: IF LPAREN booleanExpr RPAREN block
 whileStmt: WHILE LPAREN booleanExpr RPAREN block
          | WHILE LPAREN IDENTIFIER RPAREN block;
 
-booleanExpr: booleanExpr LOGICALOR booleanExpr
+booleanExpr: LOGICALNOT booleanExpr
+           | booleanExpr LOGICALOR booleanExpr
            | booleanExpr LOGICALAND booleanExpr
            | booleanExpr LOGICALXOR booleanExpr
-           | LOGICALNOT booleanExpr
            | (IDENTIFIER | DECINT) (relOp | compOp) (IDENTIFIER | DECINT)
            | TRUE
            | FALSE;

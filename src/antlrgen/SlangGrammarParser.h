@@ -14,15 +14,15 @@ public:
   enum {
     PROGSTART = 1, PROGEND = 2, LPAREN = 3, RPAREN = 4, LCURLYBR = 5, RCURLYBR = 6, 
     LSQBR = 7, RSQBR = 8, PLUS = 9, MINUS = 10, DIVIDE = 11, MULT = 12, 
-    EQUAL = 13, LT = 14, GT = 15, LTEQ = 16, GTEQ = 17, COMP = 18, COMPNOTEQ = 19, 
-    MARKERCOMMULTILINESTART = 20, MARKERCOMMULTILINEEND = 21, MARKERCOMSINGLELINE = 22, 
-    COMMENT = 23, LOGICALAND = 24, LOGICALOR = 25, LOGICALXOR = 26, LOGICALNOT = 27, 
-    TRUE = 28, FALSE = 29, IF = 30, ELSE = 31, FUNCDEF = 32, VARDEF = 33, 
-    BINAND = 34, BINOR = 35, BINXOR = 36, BINNOT = 37, RIGHTARROW = 38, 
-    COLON = 39, STATEMENTEND = 40, WHILE = 41, RETURN = 42, INTTYPE = 43, 
-    STRINGTYPE = 44, BOOLTYPE = 45, VOIDTYPE = 46, NULLVALUE = 47, DECINT = 48, 
-    IDENTIFIER = 49, STRING = 50, COMMA = 51, NEWLINE = 52, TAB = 53, WHITESPACE = 54, 
-    OTHER = 55
+    MODULO = 13, EQUAL = 14, LT = 15, GT = 16, LTEQ = 17, GTEQ = 18, COMP = 19, 
+    COMPNOTEQ = 20, MARKERCOMMULTILINESTART = 21, MARKERCOMMULTILINEEND = 22, 
+    MARKERCOMSINGLELINE = 23, COMMENT = 24, LOGICALAND = 25, LOGICALOR = 26, 
+    LOGICALXOR = 27, LOGICALNOT = 28, TRUE = 29, FALSE = 30, IF = 31, ELSE = 32, 
+    FUNCDEF = 33, VARDEF = 34, BINAND = 35, BINOR = 36, BINXOR = 37, BINNOT = 38, 
+    RIGHTARROW = 39, COLON = 40, STATEMENTEND = 41, WHILE = 42, RETURN = 43, 
+    INTTYPE = 44, STRINGTYPE = 45, BOOLTYPE = 46, VOIDTYPE = 47, NULLVALUE = 48, 
+    DECINT = 49, IDENTIFIER = 50, STRING = 51, COMMA = 52, NEWLINE = 53, 
+    TAB = 54, WHITESPACE = 55, OTHER = 56
   };
 
   enum {
@@ -152,14 +152,36 @@ public:
   class  AssignStmtContext : public antlr4::ParserRuleContext {
   public:
     AssignStmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    AssignStmtContext() = default;
+    void copyFrom(AssignStmtContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  BooleanExprAssignContext : public AssignStmtContext {
+  public:
+    BooleanExprAssignContext(AssignStmtContext *ctx);
+
+    antlr4::tree::TerminalNode *IDENTIFIER();
+    antlr4::tree::TerminalNode *EQUAL();
+    BooleanExprContext *booleanExpr();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprAssignContext : public AssignStmtContext {
+  public:
+    ExprAssignContext(AssignStmtContext *ctx);
+
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *EQUAL();
     ExprContext *expr();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
   };
 
   AssignStmtContext* assignStmt();
@@ -167,24 +189,126 @@ public:
   class  ExprContext : public antlr4::ParserRuleContext {
   public:
     ExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *LPAREN();
-    std::vector<ExprContext *> expr();
-    ExprContext* expr(size_t i);
-    antlr4::tree::TerminalNode *RPAREN();
-    antlr4::tree::TerminalNode *MINUS();
-    BooleanExprContext *booleanExpr();
-    antlr4::tree::TerminalNode *IDENTIFIER();
-    antlr4::tree::TerminalNode *DECINT();
-    antlr4::tree::TerminalNode *STRING();
-    FunctionCallContext *functionCall();
-    antlr4::tree::TerminalNode *DIVIDE();
-    antlr4::tree::TerminalNode *MULT();
-    antlr4::tree::TerminalNode *PLUS();
+   
+    ExprContext() = default;
+    void copyFrom(ExprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
 
+    virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  ExprParenContext : public ExprContext {
+  public:
+    ExprParenContext(ExprContext *ctx);
+
+    antlr4::tree::TerminalNode *LPAREN();
+    ExprContext *expr();
+    antlr4::tree::TerminalNode *RPAREN();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  ExprPlusContext : public ExprContext {
+  public:
+    ExprPlusContext(ExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *PLUS();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprModuloContext : public ExprContext {
+  public:
+    ExprModuloContext(ExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *MODULO();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprMinusContext : public ExprContext {
+  public:
+    ExprMinusContext(ExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *MINUS();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprStringContext : public ExprContext {
+  public:
+    ExprStringContext(ExprContext *ctx);
+
+    antlr4::tree::TerminalNode *STRING();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  UnaryMinusContext : public ExprContext {
+  public:
+    UnaryMinusContext(ExprContext *ctx);
+
+    antlr4::tree::TerminalNode *MINUS();
+    ExprContext *expr();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprIdentifierContext : public ExprContext {
+  public:
+    ExprIdentifierContext(ExprContext *ctx);
+
+    antlr4::tree::TerminalNode *IDENTIFIER();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprDecintContext : public ExprContext {
+  public:
+    ExprDecintContext(ExprContext *ctx);
+
+    antlr4::tree::TerminalNode *DECINT();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprDivideContext : public ExprContext {
+  public:
+    ExprDivideContext(ExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *DIVIDE();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprMultiplyContext : public ExprContext {
+  public:
+    ExprMultiplyContext(ExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    antlr4::tree::TerminalNode *MULT();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ExprFunctionCallContext : public ExprContext {
+  public:
+    ExprFunctionCallContext(ExprContext *ctx);
+
+    FunctionCallContext *functionCall();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   ExprContext* expr();
@@ -224,7 +348,34 @@ public:
   class  DeclAssignStmtContext : public antlr4::ParserRuleContext {
   public:
     DeclAssignStmtContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    DeclAssignStmtContext() = default;
+    void copyFrom(DeclAssignStmtContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  BooleanDeclAssignStmtContext : public DeclAssignStmtContext {
+  public:
+    BooleanDeclAssignStmtContext(DeclAssignStmtContext *ctx);
+
+    antlr4::tree::TerminalNode *VARDEF();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+    antlr4::tree::TerminalNode *COLON();
+    TypeNameContext *typeName();
+    antlr4::tree::TerminalNode *EQUAL();
+    BooleanExprContext *booleanExpr();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  NormalDeclAssignStmtContext : public DeclAssignStmtContext {
+  public:
+    NormalDeclAssignStmtContext(DeclAssignStmtContext *ctx);
+
     antlr4::tree::TerminalNode *VARDEF();
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *COLON();
@@ -232,9 +383,7 @@ public:
     antlr4::tree::TerminalNode *EQUAL();
     ExprContext *expr();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
   };
 
   DeclAssignStmtContext* declAssignStmt();

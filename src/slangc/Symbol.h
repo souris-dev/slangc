@@ -15,7 +15,7 @@ enum TypeTag {
     ARRAY_TAG, CONST_TAG
 };
 enum SymbolType {
-    FUNCTION, INT, STRING, VOID
+    FUNCTION, INT, STRING, BOOL, VOID
 };
 
 class Symbol {
@@ -23,13 +23,13 @@ public:
     std::string name;
     std::vector<TypeTag> typeTags;
     std::vector<int> lineNumbers;
-    int firstAppearedLine = -1;
+    size_t firstAppearedLine = -1;
 
     Symbol() = default;
 
     explicit Symbol(std::string name);
 
-    Symbol(std::string name, int firstAppearedLine);
+    Symbol(std::string name, size_t firstAppearedLine);
 
     virtual bool isSymbolType(SymbolType tag) = 0;
 
@@ -42,11 +42,11 @@ public:
     SymbolType returnType;
     std::vector<std::shared_ptr<Symbol>> paramList;
 
-    FunctionSymbol(std::string name, int firstAppearedLine);
+    FunctionSymbol(std::string name, size_t firstAppearedLine);
 
-    FunctionSymbol(std::string name, int firstAppearedLine, std::vector<std::shared_ptr<Symbol>> paramList);
+    FunctionSymbol(std::string name, size_t firstAppearedLine, std::vector<std::shared_ptr<Symbol>> paramList);
 
-    FunctionSymbol(std::string name, int firstAppearedLine, std::vector<std::shared_ptr<Symbol>> paramList,
+    FunctionSymbol(std::string name, size_t firstAppearedLine, std::vector<std::shared_ptr<Symbol>> paramList,
                    SymbolType returnType);
 
     bool isSymbolType(SymbolType tag) override;
@@ -57,9 +57,9 @@ class IntSymbol : public Symbol {
 public:
     int value = 0xDEAD;
 
-    IntSymbol(std::string name, int firstAppearedLine);
+    IntSymbol(std::string name, size_t firstAppearedLine);
 
-    IntSymbol(std::string name, int firstAppearedLine, int value);
+    IntSymbol(std::string name, size_t firstAppearedLine, int value);
 
     bool isSymbolType(SymbolType tag) override;
 };
@@ -69,9 +69,21 @@ class StringSymbol : public Symbol {
 public:
     std::string value = "lawl";
 
-    StringSymbol(std::string name, int firstAppearedLine);
+    StringSymbol(std::string name, size_t firstAppearedLine);
 
-    StringSymbol(std::string name, int firstAppearedLine, std::string value);
+    StringSymbol(std::string name, size_t firstAppearedLine, std::string value);
+
+    bool isSymbolType(SymbolType tag) override;
+};
+
+/* Bool Symbol */
+class BoolSymbol : public Symbol {
+public:
+    bool value = true;
+
+    BoolSymbol(std::string name, size_t firstAppearedLine);
+
+    BoolSymbol(std::string name, size_t firstAppearedLine, bool value);
 
     bool isSymbolType(SymbolType tag) override;
 };

@@ -10,7 +10,8 @@
 
 Symbol::Symbol(std::string name) : name(std::move(name)), firstAppearedLine(-1) {}
 
-Symbol::Symbol(std::string name, int firstAppearedLine) : name(std::move(name)), firstAppearedLine(firstAppearedLine) {}
+Symbol::Symbol(std::string name, size_t firstAppearedLine) : name(std::move(name)),
+                                                             firstAppearedLine(firstAppearedLine) {}
 
 inline bool Symbol::hasTypeTag(TypeTag tag) {
     return (std::find(typeTags.begin(), typeTags.end(), tag) != typeTags.end());
@@ -19,14 +20,14 @@ inline bool Symbol::hasTypeTag(TypeTag tag) {
 
 /* FunctionSymbol methods */
 
-FunctionSymbol::FunctionSymbol(std::string name, int firstAppearedLine) : Symbol(std::move(name), firstAppearedLine),
-                                                                          returnType(SymbolType::VOID) {}
+FunctionSymbol::FunctionSymbol(std::string name, size_t firstAppearedLine) : Symbol(std::move(name), firstAppearedLine),
+                                                                             returnType(SymbolType::VOID) {}
 
 inline bool FunctionSymbol::isSymbolType(SymbolType tag) {
     return (tag == SymbolType::FUNCTION);
 }
 
-FunctionSymbol::FunctionSymbol(std::string name, int firstAppearedLine,
+FunctionSymbol::FunctionSymbol(std::string name, size_t firstAppearedLine,
                                std::vector<std::shared_ptr<Symbol>> paramList) : Symbol(std::move(name),
                                                                                         firstAppearedLine),
                                                                                  paramList(std::move(paramList)),
@@ -34,7 +35,8 @@ FunctionSymbol::FunctionSymbol(std::string name, int firstAppearedLine,
 
 }
 
-FunctionSymbol::FunctionSymbol(std::string name, int firstAppearedLine, std::vector<std::shared_ptr<Symbol>> paramList,
+FunctionSymbol::FunctionSymbol(std::string name, size_t firstAppearedLine,
+                               std::vector<std::shared_ptr<Symbol>> paramList,
                                SymbolType returnType) : Symbol(std::move(name),
                                                                firstAppearedLine),
                                                         paramList(std::move(paramList)),
@@ -45,10 +47,11 @@ FunctionSymbol::FunctionSymbol(std::string name, int firstAppearedLine, std::vec
 
 /* IntSymbol methods */
 
-IntSymbol::IntSymbol(std::string name, int firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
+IntSymbol::IntSymbol(std::string name, size_t firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
 
-IntSymbol::IntSymbol(std::string name, int firstAppearedLine, int value) : Symbol(std::move(name), firstAppearedLine),
-                                                                           value(value) {}
+IntSymbol::IntSymbol(std::string name, size_t firstAppearedLine, int value) : Symbol(std::move(name),
+                                                                                     firstAppearedLine),
+                                                                              value(value) {}
 
 bool IntSymbol::isSymbolType(SymbolType tag) {
     return (tag == SymbolType::INT);
@@ -57,12 +60,24 @@ bool IntSymbol::isSymbolType(SymbolType tag) {
 
 /* StringSymbol methods */
 
-StringSymbol::StringSymbol(std::string name, int firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
+StringSymbol::StringSymbol(std::string name, size_t firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
 
-StringSymbol::StringSymbol(std::string name, int firstAppearedLine, std::string value) : Symbol(std::move(name),
-                                                                                                firstAppearedLine),
-                                                                                         value(std::move(value)) {}
+StringSymbol::StringSymbol(std::string name, size_t firstAppearedLine, std::string value) : Symbol(std::move(name),
+                                                                                                   firstAppearedLine),
+                                                                                            value(std::move(value)) {}
 
 bool StringSymbol::isSymbolType(SymbolType tag) {
-    return (tag == SymbolType::INT);
+    return (tag == SymbolType::STRING);
+}
+
+/* BoolSymbol methods */
+
+BoolSymbol::BoolSymbol(std::string name, size_t firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
+
+BoolSymbol::BoolSymbol(std::string name, size_t firstAppearedLine, bool value) : Symbol(std::move(name),
+                                                                                        firstAppearedLine),
+                                                                                 value(value) {}
+
+bool BoolSymbol::isSymbolType(SymbolType tag) {
+    return (tag == SymbolType::BOOL);
 }

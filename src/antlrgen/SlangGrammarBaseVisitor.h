@@ -35,11 +35,55 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitAssignStmt(SlangGrammarParser::AssignStmtContext *ctx) override {
+  virtual antlrcpp::Any visitExprAssign(SlangGrammarParser::ExprAssignContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExpr(SlangGrammarParser::ExprContext *ctx) override {
+  virtual antlrcpp::Any visitBooleanExprAssign(SlangGrammarParser::BooleanExprAssignContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprParen(SlangGrammarParser::ExprParenContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprPlus(SlangGrammarParser::ExprPlusContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprModulo(SlangGrammarParser::ExprModuloContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprMinus(SlangGrammarParser::ExprMinusContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprString(SlangGrammarParser::ExprStringContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitUnaryMinus(SlangGrammarParser::UnaryMinusContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprDecint(SlangGrammarParser::ExprDecintContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprDivide(SlangGrammarParser::ExprDivideContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprMultiply(SlangGrammarParser::ExprMultiplyContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExprFunctionCall(SlangGrammarParser::ExprFunctionCallContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -51,7 +95,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitDeclAssignStmt(SlangGrammarParser::DeclAssignStmtContext *ctx) override {
+  virtual antlrcpp::Any visitNormalDeclAssignStmt(SlangGrammarParser::NormalDeclAssignStmtContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanDeclAssignStmt(SlangGrammarParser::BooleanDeclAssignStmtContext *ctx) override {
     return visitChildren(ctx);
   }
 
