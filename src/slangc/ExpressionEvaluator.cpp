@@ -181,3 +181,10 @@ void ExpressionEvaluator<T>::evaluateFunctionCallExpr(SlangGrammarParser::Functi
 template<class T>
 ExpressionEvaluator<T>::ExpressionEvaluator(std::shared_ptr<SymbolTable> symbolTable) :
         symbolTable(std::move(symbolTable)) {}
+
+
+// TODO: add more types here when ExpressionEvaluator supports them
+// For why this line is here, check out:
+// https://isocpp.org/wiki/faq/templates#separate-template-fn-defn-from-decl
+// (This basically prevents linker errors.)
+template class ExpressionEvaluator<int>;

@@ -60,20 +60,32 @@ antlrcpp::Any DeclarationVisitor::visitNormalDeclAssignStmt(SlangGrammarParser::
     }
     else if (typeNameCtx->INTTYPE() != nullptr) {
         IntSymbol intSymbol(idName, firstAppearedLineNum);
-        auto evaluator = ExpressionEvaluator<int>(symbolTable);
+        ExpressionEvaluator<int> evaluator(symbolTable);
         int value = evaluator.evaluate(ctx->expr());
         intSymbol.value = value;
         symbolTable->insert(idName, std::make_shared<IntSymbol>(intSymbol));
     }
     else if (typeNameCtx->STRINGTYPE() != nullptr) {
         StringSymbol stringSymbol(idName, firstAppearedLineNum);
+
+        auto value = visit(ctx->expr());
+
+        if (!value.is<std::string>()) {
+            // TODO: throw error and halt for assigning non-string value to a string value
+            std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+            std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
+            exit(-1);
+        }
+
+        std::string stringVal = value.as<std::string>();
+        stringSymbol.value = stringVal;
         symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
     }
     else if (typeNameCtx->VOIDTYPE() != nullptr) {
         // No support yet for void variables
         // TODO: throw error and abort for no support of void variables
         // Lol what are they even supposed to be
-        std::cerr << "Line " << firstAppearedLineNum << ": ";
+        std::cerr << "[Error, Line " << firstAppearedLineNum << "] ";
         std::cerr << "Void types for variable declarations are not supported!" << std::endl;
         exit(-1);
     }
@@ -85,6 +97,40 @@ antlrcpp::Any DeclarationVisitor::visitBooleanDeclAssignStmt(SlangGrammarParser:
 }
 
 antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssignContext *ctx) {
+    auto idName = ctx->IDENTIFIER()->getText();
+    std::shared_ptr<Symbol> symbol = symbolTable->lookup(idName);
+
+    // TODO: do we want an auto type of keyword?
+
+    if (symbol == nullptr) {
+        // TODO: throw error and halt because of assignment to unknown symbol
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Assignment to previously undeclared symbol." << std::endl;
+        exit(-1);
+    }
+
+    if (symbol->isSymbolType(SymbolType::STRING)) {
+        std::shared_ptr<StringSymbol> stringSymbol = std::dynamic_pointer_cast<StringSymbol>(symbol);
+        auto value = visit(ctx->expr());
+
+        if (!value.is<std::string>()) {
+            // TODO: throw error and halt for assigning non-string value to a string value
+            std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+            std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
+            exit(-1);
+        }
+
+        std::string stringVal = value.as<std::string>();
+        stringSymbol->value = stringVal;
+    }
+
+    else if (symbol->isSymbolType(SymbolType::INT)) {
+        std::shared_ptr<IntSymbol> intSymbol = std::dynamic_pointer_cast<IntSymbol>(symbol);
+        ExpressionEvaluator<int> evaluator(symbolTable);
+        int value = evaluator.evaluate(ctx->expr());
+        intSymbol->value = value;
+    }
+
     return SlangGrammarBaseVisitor::visitExprAssign(ctx);
 }
 

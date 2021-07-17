@@ -4,7 +4,8 @@
 #include "antlr4-runtime.h"
 #include "antlrgen/SlangGrammarLexer.h"
 #include "antlrgen/SlangGrammarParser.h"
-#include "antlrgen/SlangGrammarBaseVisitor.h"
+#include "slangc/DeclarationVisitor.h"
+#include "slangc/SymbolTable.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -29,5 +30,7 @@ int main(int argc, char *argv[]) {
 
     SlangGrammarParser::ProgramContext* tree = parser.program();
 
-    std::cout << tree->toStringTree(&parser, true) << std::endl;
+    std::shared_ptr<SymbolTable> symbolTablePtr(new SymbolTable());
+    DeclarationVisitor declarationVisitor(symbolTablePtr);
+    declarationVisitor.visit(tree);
 }
