@@ -16,19 +16,18 @@ bro, lol: string = "Result is: ";
 
 \\* Function definition *\\
 introducing main(var1: int, var2: string) {
-    sis, sum: int = 0;
+    bro, sum: int = 0;
 
     \\* Loop *\\
     while (var1 < 4) {
         sum = sum + 1;
-        var1 = var1 - 1;
     }
 
     return sum;
 } -> int \\* Return type - void by default *\\
 
 \\ * Function call expression *\\
-sis, res: int = (initCounter, lol) -> main;
+bro, res: int = (initCounter, lol) -> main;
 
 \\* Function call statement *\\
 (res) -> print;

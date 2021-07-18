@@ -21,6 +21,8 @@ private:
     void destroyLastScopeVars();
 
 public:
+    SymbolTable();
+
     bool insert(const std::string &name, std::shared_ptr<Symbol> symbol);
 
     void incrementScope();
@@ -34,6 +36,8 @@ public:
     [[maybe_unused]] bool deleteSymbol(const std::string &name);
 
     [[maybe_unused]] bool modify(const std::string &name, std::shared_ptr<Symbol> replaceByThisSymbol);
+
+    [[maybe_unused]] void dump();
 };
 
 

@@ -11,10 +11,12 @@ DeclarationVisitor::DeclarationVisitor(std::shared_ptr<SymbolTable> symbolTableR
         std::move(symbolTableRef)) {}
 
 antlrcpp::Any DeclarationVisitor::visitProgram(SlangGrammarParser::ProgramContext *ctx) {
+    std::cout << "Visiting program..." << std::endl; // debug
     return SlangGrammarBaseVisitor::visitProgram(ctx);
 }
 
 antlrcpp::Any DeclarationVisitor::visitBlock(SlangGrammarParser::BlockContext *ctx) {
+    std::cout << "Visiting block..." << std::endl; // debug
     symbolTable->incrementScope();
     auto blockVisited = SlangGrammarBaseVisitor::visitBlock(ctx);
     symbolTable->decrementScope();
@@ -22,19 +24,23 @@ antlrcpp::Any DeclarationVisitor::visitBlock(SlangGrammarParser::BlockContext *c
 }
 
 antlrcpp::Any DeclarationVisitor::visitDeclStmt(SlangGrammarParser::DeclStmtContext *ctx) {
+    std::cout << "Visiting declstmt..." << std::endl; // debug
     auto idName = ctx->IDENTIFIER()->getSymbol()->getText();
     size_t firstAppearedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
     auto typeNameCtx = ctx->typeName();
 
     if (typeNameCtx->BOOLTYPE() != nullptr) {
+        std::cout << "Found bool type for id " << idName << std::endl;
         BoolSymbol boolSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<BoolSymbol>(boolSymbol));
     }
     else if (typeNameCtx->INTTYPE() != nullptr) {
+        std::cout << "Found int type for id " << idName << std::endl;
         IntSymbol intSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<IntSymbol>(intSymbol));
     }
     else if (typeNameCtx->STRINGTYPE() != nullptr) {
+        std::cout << "Found string type for id " << idName << std::endl;
         StringSymbol stringSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
     }
@@ -68,16 +74,21 @@ antlrcpp::Any DeclarationVisitor::visitNormalDeclAssignStmt(SlangGrammarParser::
     else if (typeNameCtx->STRINGTYPE() != nullptr) {
         StringSymbol stringSymbol(idName, firstAppearedLineNum);
 
-        auto value = visit(ctx->expr());
+        // TODO: this looks so weird doesn't it lol
+        ExpressionEvaluator<int> evaluator(symbolTable);
+        antlrcpp::Any value = evaluator.visit(ctx->expr());
 
-        if (!value.is<std::string>()) {
+        std::string stringVal;
+
+        try {
+            stringVal = value.as<std::string>();
+        } catch (const std::bad_cast& e) {
             // TODO: throw error and halt for assigning non-string value to a string value
             std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
             std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
             exit(-1);
         }
 
-        std::string stringVal = value.as<std::string>();
         stringSymbol.value = stringVal;
         symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
     }
@@ -113,14 +124,16 @@ antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssign
         std::shared_ptr<StringSymbol> stringSymbol = std::dynamic_pointer_cast<StringSymbol>(symbol);
         auto value = visit(ctx->expr());
 
-        if (!value.is<std::string>()) {
+        std::string stringVal;
+        try {
+            stringVal = value.as<std::string>();
+        } catch (const std::bad_cast& e) {
             // TODO: throw error and halt for assigning non-string value to a string value
             std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
             std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
             exit(-1);
         }
 
-        std::string stringVal = value.as<std::string>();
         stringSymbol->value = stringVal;
     }
 
@@ -136,4 +149,8 @@ antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssign
 
 antlrcpp::Any DeclarationVisitor::visitBooleanExprAssign(SlangGrammarParser::BooleanExprAssignContext *ctx) {
     return SlangGrammarBaseVisitor::visitBooleanExprAssign(ctx);
+}
+
+antlrcpp::Any DeclarationVisitor::visitFuncDef(SlangGrammarParser::FuncDefContext *ctx) {
+    return SlangGrammarBaseVisitor::visitFuncDef(ctx);
 }

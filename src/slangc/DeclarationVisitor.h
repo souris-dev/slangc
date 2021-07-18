@@ -28,6 +28,8 @@ public:
     antlrcpp::Any visitExprAssign(SlangGrammarParser::ExprAssignContext *ctx) override;
 
     antlrcpp::Any visitBooleanExprAssign(SlangGrammarParser::BooleanExprAssignContext *ctx) override;
+
+    antlrcpp::Any visitFuncDef(SlangGrammarParser::FuncDefContext *ctx) override;
 };
 
 

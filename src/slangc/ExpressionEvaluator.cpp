@@ -33,10 +33,21 @@ antlrcpp::Any ExpressionEvaluator<T>::visitUnaryMinus(SlangGrammarParser::UnaryM
         std::cout << "[Error, line " << ctx->MINUS()->getSymbol()->getLine() << "] ";
         std::cout << "Unary minus is only defined for numeric types." << std::endl;
         exit(-1);
+    } else {
+        T operand = visit(ctx->expr()).template as<T>();
+        return (-operand);
     }
+}
 
-    T operand = visit(ctx->expr()).template as<T>();
-    return (-operand);
+template<>
+antlrcpp::Any ExpressionEvaluator<std::string>::visitUnaryMinus(SlangGrammarParser::UnaryMinusContext *ctx) {
+    // Unary minus is defined only for numeric types
+    // TODO: add more types here
+
+    // TODO: throw error and abort because of incompatible types
+    std::cout << "[Error, line " << ctx->MINUS()->getSymbol()->getLine() << "] ";
+    std::cout << "Unary minus is only defined for numeric types (attempted on string)." << std::endl;
+    exit(-1);
 }
 
 template<class T>
@@ -64,6 +75,15 @@ antlrcpp::Any ExpressionEvaluator<T>::visitExprDivide(SlangGrammarParser::ExprDi
     return (left / right);
 }
 
+template<>
+antlrcpp::Any ExpressionEvaluator<std::string>::visitExprDivide(SlangGrammarParser::ExprDivideContext *ctx) {
+    // Division is defined only for numeric types
+    // TODO: throw error and abort because of incompatible types
+    std::cout << "[Error, line " << ctx->DIVIDE()->getSymbol()->getLine() << "] ";
+    std::cout << "Division is only defined for numeric types (attempted on string)." << std::endl;
+    exit(-1);
+}
+
 template<class T>
 antlrcpp::Any ExpressionEvaluator<T>::visitExprMultiply(SlangGrammarParser::ExprMultiplyContext *ctx) {
     // For now, multiplication is defined only for numeric types
@@ -80,6 +100,17 @@ antlrcpp::Any ExpressionEvaluator<T>::visitExprMultiply(SlangGrammarParser::Expr
     T right = visit(ctx->expr(1)).template as<T>();
 
     return (left * right);
+}
+
+template<>
+antlrcpp::Any ExpressionEvaluator<std::string>::visitExprMultiply(SlangGrammarParser::ExprMultiplyContext *ctx) {
+    // For now, multiplication is defined only for numeric types
+    // Support for string types may be added soon
+
+    // TODO: throw error and abort because of incompatible types
+    std::cout << "[Error, line " << ctx->MULT()->getSymbol()->getLine() << "] ";
+    std::cout << "Multiplication is only defined for numeric types as of now (attempted on string)." << std::endl;
+    exit(-1);
 }
 
 template<class T>
@@ -122,6 +153,16 @@ antlrcpp::Any ExpressionEvaluator<T>::visitExprMinus(SlangGrammarParser::ExprMin
     return (left - right);
 }
 
+template <>
+antlrcpp::Any ExpressionEvaluator<std::string>::visitExprMinus(SlangGrammarParser::ExprMinusContext *ctx) {
+    // Since substraction is defined only for numeric types
+
+    // TODO: throw error and abort because of incompatible types
+    std::cout << "[Error, line " << ctx->MINUS()->getSymbol()->getLine() << "] ";
+    std::cout << "Subtracting is only defined for numeric types (attempted on string)." << std::endl;
+    exit(-1);
+}
+
 template<class T>
 antlrcpp::Any ExpressionEvaluator<T>::visitExprParen(SlangGrammarParser::ExprParenContext *ctx) {
     return visit(ctx->expr());
@@ -146,7 +187,7 @@ antlrcpp::Any ExpressionEvaluator<T>::visitExprIdentifier(SlangGrammarParser::Ex
         std::shared_ptr<IntSymbol> intSymbol = std::dynamic_pointer_cast<IntSymbol>(symbol);
         return intSymbol->value;
     }
-    // TODO: when more datatypes are added, add typechecking for them too
+        // TODO: when more datatypes are added, add typechecking for them too
     else {
         // TODO: Throw error for wrong type
         std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
@@ -154,7 +195,6 @@ antlrcpp::Any ExpressionEvaluator<T>::visitExprIdentifier(SlangGrammarParser::Ex
                   << std::endl;
         exit(-1);
     }
-
 }
 
 template<class T>
@@ -166,7 +206,6 @@ template<class T>
 antlrcpp::Any ExpressionEvaluator<T>::visitExprString(SlangGrammarParser::ExprStringContext *ctx) {
     return ctx->STRING()->getText();
 }
-
 
 template<class T>
 void ExpressionEvaluator<T>::evaluateBooleanExpr(SlangGrammarParser::BooleanExprContext *ctx) {
@@ -187,4 +226,8 @@ ExpressionEvaluator<T>::ExpressionEvaluator(std::shared_ptr<SymbolTable> symbolT
 // For why this line is here, check out:
 // https://isocpp.org/wiki/faq/templates#separate-template-fn-defn-from-decl
 // (This basically prevents linker errors.)
-template class ExpressionEvaluator<int>;
+template
+class ExpressionEvaluator<int>;
+
+template
+class ExpressionEvaluator<std::string>;

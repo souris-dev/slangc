@@ -31,6 +31,11 @@ int main(int argc, char *argv[]) {
     SlangGrammarParser::ProgramContext* tree = parser.program();
 
     std::shared_ptr<SymbolTable> symbolTablePtr(new SymbolTable());
+
+    std::cout << "Visiting declarations..." << std::endl;
     DeclarationVisitor declarationVisitor(symbolTablePtr);
     declarationVisitor.visit(tree);
+
+    std::cout << "Dumping table: " << std::endl;
+    symbolTablePtr->dump();
 }
