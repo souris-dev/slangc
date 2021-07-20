@@ -27,7 +27,7 @@ introducing main(var1: int, var2: string) {
 } -> int \\* Return type - void by default *\\
 
 \\ * Function call expression *\\
-bro, res: int = (initCounter, lol) -> main;
+\\ bro, res: int = (initCounter, lol) -> main;
 
 \\* Function call statement *\\
 (res) -> print;

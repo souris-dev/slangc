@@ -33,18 +33,15 @@ antlrcpp::Any DeclarationVisitor::visitDeclStmt(SlangGrammarParser::DeclStmtCont
         std::cout << "Found bool type for id " << idName << std::endl;
         BoolSymbol boolSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<BoolSymbol>(boolSymbol));
-    }
-    else if (typeNameCtx->INTTYPE() != nullptr) {
+    } else if (typeNameCtx->INTTYPE() != nullptr) {
         std::cout << "Found int type for id " << idName << std::endl;
         IntSymbol intSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<IntSymbol>(intSymbol));
-    }
-    else if (typeNameCtx->STRINGTYPE() != nullptr) {
+    } else if (typeNameCtx->STRINGTYPE() != nullptr) {
         std::cout << "Found string type for id " << idName << std::endl;
         StringSymbol stringSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
-    }
-    else if (typeNameCtx->VOIDTYPE() != nullptr) {
+    } else if (typeNameCtx->VOIDTYPE() != nullptr) {
         // No support yet for void variables
         // TODO: throw error and abort for void type variable
         // What are they even supposed to do, lol
@@ -63,15 +60,13 @@ antlrcpp::Any DeclarationVisitor::visitNormalDeclAssignStmt(SlangGrammarParser::
     if (typeNameCtx->BOOLTYPE() != nullptr) {
         BoolSymbol boolSymbol(idName, firstAppearedLineNum);
         symbolTable->insert(idName, std::make_shared<BoolSymbol>(boolSymbol));
-    }
-    else if (typeNameCtx->INTTYPE() != nullptr) {
+    } else if (typeNameCtx->INTTYPE() != nullptr) {
         IntSymbol intSymbol(idName, firstAppearedLineNum);
         ExpressionEvaluator<int> evaluator(symbolTable);
         int value = evaluator.evaluate(ctx->expr());
         intSymbol.value = value;
         symbolTable->insert(idName, std::make_shared<IntSymbol>(intSymbol));
-    }
-    else if (typeNameCtx->STRINGTYPE() != nullptr) {
+    } else if (typeNameCtx->STRINGTYPE() != nullptr) {
         StringSymbol stringSymbol(idName, firstAppearedLineNum);
 
         // TODO: this looks so weird doesn't it lol
@@ -82,7 +77,7 @@ antlrcpp::Any DeclarationVisitor::visitNormalDeclAssignStmt(SlangGrammarParser::
 
         try {
             stringVal = value.as<std::string>();
-        } catch (const std::bad_cast& e) {
+        } catch (const std::bad_cast &e) {
             // TODO: throw error and halt for assigning non-string value to a string value
             std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
             std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
@@ -91,8 +86,7 @@ antlrcpp::Any DeclarationVisitor::visitNormalDeclAssignStmt(SlangGrammarParser::
 
         stringSymbol.value = stringVal;
         symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
-    }
-    else if (typeNameCtx->VOIDTYPE() != nullptr) {
+    } else if (typeNameCtx->VOIDTYPE() != nullptr) {
         // No support yet for void variables
         // TODO: throw error and abort for no support of void variables
         // Lol what are they even supposed to be
@@ -127,7 +121,7 @@ antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssign
         std::string stringVal;
         try {
             stringVal = value.as<std::string>();
-        } catch (const std::bad_cast& e) {
+        } catch (const std::bad_cast &e) {
             // TODO: throw error and halt for assigning non-string value to a string value
             std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
             std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
@@ -135,9 +129,7 @@ antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssign
         }
 
         stringSymbol->value = stringVal;
-    }
-
-    else if (symbol->isSymbolType(SymbolType::INT)) {
+    } else if (symbol->isSymbolType(SymbolType::INT)) {
         std::shared_ptr<IntSymbol> intSymbol = std::dynamic_pointer_cast<IntSymbol>(symbol);
         ExpressionEvaluator<int> evaluator(symbolTable);
         int value = evaluator.evaluate(ctx->expr());
@@ -151,6 +143,41 @@ antlrcpp::Any DeclarationVisitor::visitBooleanExprAssign(SlangGrammarParser::Boo
     return SlangGrammarBaseVisitor::visitBooleanExprAssign(ctx);
 }
 
-antlrcpp::Any DeclarationVisitor::visitFuncDef(SlangGrammarParser::FuncDefContext *ctx) {
-    return SlangGrammarBaseVisitor::visitFuncDef(ctx);
+antlrcpp::Any DeclarationVisitor::visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *ctx) {
+    auto funcIdName = ctx->FUNCDEF()->getText();
+    auto definedLineNum = ctx->FUNCDEF()->getSymbol()->getLine();
+    std::vector<std::shared_ptr<Symbol>> paramList;
+
+    std::transform(paramList.begin(), paramList.end(), ctx->funcArgList()->args.begin(),
+    [](SlangGrammarParser::ArgParamContext *argContext) -> std::shared_ptr<Symbol> {
+        auto idName = argContext->IDENTIFIER()->getText();
+        auto definedOnLineNum = argContext->IDENTIFIER()->getSymbol()->getLine();
+
+        auto typeNameCtx = argContext->typeName();
+
+        if (typeNameCtx->INTTYPE() != nullptr) {
+            IntSymbol intSymbol(idName, definedOnLineNum);
+            
+        }
+        else if (typeNameCtx->STRINGTYPE() != nullptr) {
+
+        }
+        else if (typeNameCtx->BOOLTYPE() != nullptr) {
+
+        }
+        else if (typeNameCtx->VOIDTYPE() != nullptr) {
+
+        }
+        else {
+            /* we shouldn't reach here because the parser won't parse
+               any other keyword */
+            return nullptr;
+        }
+    });
+
+    return SlangGrammarBaseVisitor::visitImplicitRetTypeFuncDef(ctx);
+}
+
+antlrcpp::Any DeclarationVisitor::visitExplicitRetTypeFuncDef(SlangGrammarParser::ExplicitRetTypeFuncDefContext *ctx) {
+    return SlangGrammarBaseVisitor::visitExplicitRetTypeFuncDef(ctx);
 }

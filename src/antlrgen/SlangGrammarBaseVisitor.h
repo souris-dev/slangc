@@ -131,7 +131,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitFuncDef(SlangGrammarParser::FuncDefContext *ctx) override {
+  virtual antlrcpp::Any visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitExplicitRetTypeFuncDef(SlangGrammarParser::ExplicitRetTypeFuncDefContext *ctx) override {
     return visitChildren(ctx);
   }
 

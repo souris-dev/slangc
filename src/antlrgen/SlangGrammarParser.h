@@ -448,10 +448,8 @@ public:
     antlr4::tree::TerminalNode *LOGICALNOT();
     std::vector<BooleanExprContext *> booleanExpr();
     BooleanExprContext* booleanExpr(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> IDENTIFIER();
-    antlr4::tree::TerminalNode* IDENTIFIER(size_t i);
-    std::vector<antlr4::tree::TerminalNode *> DECINT();
-    antlr4::tree::TerminalNode* DECINT(size_t i);
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
     RelOpContext *relOp();
     CompOpContext *compOp();
     antlr4::tree::TerminalNode *TRUE();
@@ -515,7 +513,20 @@ public:
   class  FuncDefContext : public antlr4::ParserRuleContext {
   public:
     FuncDefContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    FuncDefContext() = default;
+    void copyFrom(FuncDefContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  ImplicitRetTypeFuncDefContext : public FuncDefContext {
+  public:
+    ImplicitRetTypeFuncDefContext(FuncDefContext *ctx);
+
     antlr4::tree::TerminalNode *FUNCDEF();
     antlr4::tree::TerminalNode *IDENTIFIER();
     BlockContext *block();
@@ -523,18 +534,33 @@ public:
     antlr4::tree::TerminalNode *RPAREN();
     FuncArgListContext *funcArgList();
     antlr4::tree::TerminalNode *STATEMENTEND();
-    antlr4::tree::TerminalNode *RIGHTARROW();
-    TypeNameContext *typeName();
-
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  ExplicitRetTypeFuncDefContext : public FuncDefContext {
+  public:
+    ExplicitRetTypeFuncDefContext(FuncDefContext *ctx);
+
+    antlr4::tree::TerminalNode *RIGHTARROW();
+    TypeNameContext *typeName();
+    antlr4::tree::TerminalNode *FUNCDEF();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+    BlockContext *block();
+    antlr4::tree::TerminalNode *LPAREN();
+    antlr4::tree::TerminalNode *RPAREN();
+    FuncArgListContext *funcArgList();
+    antlr4::tree::TerminalNode *STATEMENTEND();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   FuncDefContext* funcDef();
 
   class  FuncArgListContext : public antlr4::ParserRuleContext {
   public:
+    SlangGrammarParser::ArgParamContext *argParamContext = nullptr;
+    std::vector<ArgParamContext *> args;
     FuncArgListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ArgParamContext *> argParam();
@@ -566,6 +592,8 @@ public:
 
   class  CallArgListContext : public antlr4::ParserRuleContext {
   public:
+    SlangGrammarParser::ExprContext *exprContext = nullptr;
+    std::vector<ExprContext *> callParams;
     CallArgListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     std::vector<ExprContext *> expr();

@@ -129,7 +129,7 @@ booleanExpr: LOGICALNOT booleanExpr
            | booleanExpr LOGICALOR booleanExpr
            | booleanExpr LOGICALAND booleanExpr
            | booleanExpr LOGICALXOR booleanExpr
-           | (IDENTIFIER | DECINT) (relOp | compOp) (IDENTIFIER | DECINT)
+           | expr (relOp | compOp) expr
            | TRUE
            | FALSE;
 
@@ -141,16 +141,16 @@ compoundStmt: (block | ifStmt | whileStmt);
 
 funcDef: (FUNCDEF IDENTIFIER block
        | FUNCDEF IDENTIFIER LPAREN RPAREN block
-       | FUNCDEF IDENTIFIER LPAREN funcArgList RPAREN block) (STATEMENTEND)?
+       | FUNCDEF IDENTIFIER LPAREN funcArgList RPAREN block) (STATEMENTEND)? #implicitRetTypeFuncDef
        | (FUNCDEF IDENTIFIER block
        | FUNCDEF IDENTIFIER LPAREN RPAREN block
-       | FUNCDEF IDENTIFIER LPAREN funcArgList RPAREN block) RIGHTARROW typeName (STATEMENTEND)?;
+       | FUNCDEF IDENTIFIER LPAREN funcArgList RPAREN block) RIGHTARROW typeName (STATEMENTEND)? #explicitRetTypeFuncDef;
 
-funcArgList: argParam
-           | (argParam COMMA)+ argParam;
+funcArgList: args+=argParam
+           | (args+=argParam COMMA)+ args+=argParam;
 argParam: IDENTIFIER COLON typeName;
 
-callArgList: expr
-           | (expr COMMA)+ expr;
+callArgList: callParams+=expr
+           | (callParams+=expr COMMA)+ callParams+=expr;
 functionCall: LPAREN RPAREN RIGHTARROW IDENTIFIER
             | LPAREN callArgList RPAREN RIGHTARROW IDENTIFIER;

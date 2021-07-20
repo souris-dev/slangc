@@ -77,7 +77,9 @@ public:
 
     virtual antlrcpp::Any visitCompoundStmt(SlangGrammarParser::CompoundStmtContext *context) = 0;
 
-    virtual antlrcpp::Any visitFuncDef(SlangGrammarParser::FuncDefContext *context) = 0;
+    virtual antlrcpp::Any visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *context) = 0;
+
+    virtual antlrcpp::Any visitExplicitRetTypeFuncDef(SlangGrammarParser::ExplicitRetTypeFuncDefContext *context) = 0;
 
     virtual antlrcpp::Any visitFuncArgList(SlangGrammarParser::FuncArgListContext *context) = 0;
 
