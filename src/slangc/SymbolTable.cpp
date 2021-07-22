@@ -36,17 +36,14 @@ std::shared_ptr<Symbol> SymbolTable::lookup(const std::string &name) {
     if (tempScope < 0) {
         if (symbolScope[0].count(name) > 0) {
             return symbolScope[0][name];
-        }
-        else {
+        } else {
             return nullptr;
         }
-    }
-    else {
+    } else {
         size_t n = symbolScope[tempScope].count(name);
         if (n > 0) {
             return symbolScope[tempScope][name];
-        }
-        else {
+        } else {
             return nullptr;
         }
     }
@@ -60,9 +57,11 @@ void SymbolTable::incrementScope() {
     currentScope++;
 }
 
-void SymbolTable::decrementScope() {
+void SymbolTable::decrementScope(bool deleteSymbols) {
     if (currentScope != 0) {
-        destroyLastScopeVars();
+        if (deleteSymbols) {
+            destroyLastScopeVars();
+        }
         currentScope--;
     }
 }

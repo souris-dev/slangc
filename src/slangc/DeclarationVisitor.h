@@ -12,6 +12,9 @@ class DeclarationVisitor : public SlangGrammarBaseVisitor {
 private:
     std::shared_ptr<SymbolTable> symbolTable = nullptr;
 
+    template<class T>
+    std::vector<std::shared_ptr<Symbol>> parseAndAddFunctionParams(T *ctx);
+
 public:
     explicit DeclarationVisitor(std::shared_ptr<SymbolTable> symbolTableRef);
 

@@ -1,3 +1,6 @@
+## TODOs
+- Add checks for redefinition of variables during declarations. (pretty easy to do).
+
 ## Arrays
 
 Q1 - Syntax for declaration?

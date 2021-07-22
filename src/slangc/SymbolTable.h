@@ -27,7 +27,7 @@ public:
 
     void incrementScope();
 
-    void decrementScope();
+    void decrementScope(bool deleteSymbols = true);
 
     void setCurrentScope(const int &scopeVal);
 

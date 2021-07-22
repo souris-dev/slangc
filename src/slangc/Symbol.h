@@ -39,7 +39,7 @@ public:
 /* Function name */
 class FunctionSymbol : public Symbol {
 public:
-    SymbolType returnType;
+    SymbolType returnType = SymbolType::VOID;
     std::vector<std::shared_ptr<Symbol>> paramList;
 
     FunctionSymbol(std::string name, size_t firstAppearedLine);

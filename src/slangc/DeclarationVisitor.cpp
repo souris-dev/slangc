@@ -144,40 +144,92 @@ antlrcpp::Any DeclarationVisitor::visitBooleanExprAssign(SlangGrammarParser::Boo
 }
 
 antlrcpp::Any DeclarationVisitor::visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *ctx) {
-    auto funcIdName = ctx->FUNCDEF()->getText();
-    auto definedLineNum = ctx->FUNCDEF()->getSymbol()->getLine();
-    std::vector<std::shared_ptr<Symbol>> paramList;
+    auto funcIdName = ctx->IDENTIFIER()->getText();
+    auto definedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
+    std::vector<std::shared_ptr<Symbol>> paramList =
+            parseAndAddFunctionParams<SlangGrammarParser::ImplicitRetTypeFuncDefContext>(ctx);
 
-    std::transform(paramList.begin(), paramList.end(), ctx->funcArgList()->args.begin(),
-    [](SlangGrammarParser::ArgParamContext *argContext) -> std::shared_ptr<Symbol> {
-        auto idName = argContext->IDENTIFIER()->getText();
-        auto definedOnLineNum = argContext->IDENTIFIER()->getSymbol()->getLine();
-
-        auto typeNameCtx = argContext->typeName();
-
-        if (typeNameCtx->INTTYPE() != nullptr) {
-            IntSymbol intSymbol(idName, definedOnLineNum);
-            
-        }
-        else if (typeNameCtx->STRINGTYPE() != nullptr) {
-
-        }
-        else if (typeNameCtx->BOOLTYPE() != nullptr) {
-
-        }
-        else if (typeNameCtx->VOIDTYPE() != nullptr) {
-
-        }
-        else {
-            /* we shouldn't reach here because the parser won't parse
-               any other keyword */
-            return nullptr;
-        }
-    });
+    FunctionSymbol functionSymbol(funcIdName, definedLineNum, paramList, SymbolType::VOID);
+    symbolTable->insert(funcIdName, std::make_shared<FunctionSymbol>(functionSymbol));
 
     return SlangGrammarBaseVisitor::visitImplicitRetTypeFuncDef(ctx);
 }
 
 antlrcpp::Any DeclarationVisitor::visitExplicitRetTypeFuncDef(SlangGrammarParser::ExplicitRetTypeFuncDefContext *ctx) {
+    auto funcIdName = ctx->IDENTIFIER()->getText();
+    auto definedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
+    std::vector<std::shared_ptr<Symbol>> paramList =
+            parseAndAddFunctionParams<SlangGrammarParser::ExplicitRetTypeFuncDefContext>(ctx);
+
+    SymbolType funcReturnType;
+
+    if (ctx->typeName()->INTTYPE() != nullptr) {
+        funcReturnType = SymbolType::INT;
+    }
+    else if (ctx->typeName()->STRINGTYPE() != nullptr) {
+        funcReturnType = SymbolType::STRING;
+    }
+    else if (ctx->typeName()->BOOLTYPE() != nullptr) {
+        funcReturnType = SymbolType::BOOL;
+    }
+    else {
+        funcReturnType = SymbolType::VOID;
+    }
+
+    FunctionSymbol functionSymbol(funcIdName, definedLineNum, paramList, funcReturnType);
+    symbolTable->insert(funcIdName, std::make_shared<FunctionSymbol>(functionSymbol));
+
     return SlangGrammarBaseVisitor::visitExplicitRetTypeFuncDef(ctx);
+}
+
+template<class T>
+std::vector<std::shared_ptr<Symbol>> DeclarationVisitor::parseAndAddFunctionParams(T *ctx) {
+    std::vector<std::shared_ptr<Symbol>> paramList(ctx->funcArgList()->args.size());
+
+    std::transform(ctx->funcArgList()->args.begin(), ctx->funcArgList()->args.end(), paramList.begin(),
+                   [this](SlangGrammarParser::ArgParamContext *argContext) -> std::shared_ptr<Symbol> {
+                       auto idName = argContext->IDENTIFIER()->getText();
+                       auto definedOnLineNum = argContext->IDENTIFIER()->getSymbol()->getLine();
+                       auto typeNameCtx = argContext->typeName();
+
+                       /* We increment the scope once here and decrement it again after inserting the
+                        * symbols in the parameter list (while not deleting the new scope variables).
+                        * The decrement is necessary because when the compiler enters the block, it will
+                        * increment its scope again. We want the parameters to stay. */
+
+                       this->symbolTable->incrementScope();
+
+                       if (typeNameCtx->INTTYPE() != nullptr) {
+                           IntSymbol intSymbol(idName, definedOnLineNum);
+                           this->symbolTable->insert(idName, std::make_shared<IntSymbol>(intSymbol));
+                           this->symbolTable->decrementScope(false); // do not delete the new scope's symbols
+                           return std::make_shared<IntSymbol>(intSymbol);
+                       }
+                       else if (typeNameCtx->STRINGTYPE() != nullptr) {
+                           StringSymbol stringSymbol(idName, definedOnLineNum);
+                           this->symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
+                           this->symbolTable->decrementScope(false); // do not delete the new scope's symbols
+                           return std::make_shared<StringSymbol>(stringSymbol);
+                       }
+                       else if (typeNameCtx->BOOLTYPE() != nullptr) {
+                           BoolSymbol boolSymbol(idName, definedOnLineNum);
+                           this->symbolTable->insert(idName, std::make_shared<BoolSymbol>(boolSymbol));
+                           this->symbolTable->decrementScope(false); // do not delete the new scope's symbols
+                           return std::make_shared<BoolSymbol>(boolSymbol);
+                       }
+                       else if (typeNameCtx->VOIDTYPE() != nullptr) {
+                           // TODO: throw error and halt because void variables are not supported
+                           // Lol what are void variables anyway
+                           std::cerr << "[Error, Line " << argContext->IDENTIFIER()->getSymbol()->getLine() << "] ";
+                           std::cerr << "Void type variables are not supported. What did you even expect?" << std::endl;
+                           exit(-1);
+                       }
+                       else {
+                           /* we shouldn't reach here because the parser won't parse
+                              any other keyword */
+                           return nullptr;
+                       }
+                   });
+
+    return paramList;
 }
