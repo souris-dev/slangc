@@ -365,7 +365,7 @@ public:
     antlr4::tree::TerminalNode *VARDEF();
     antlr4::tree::TerminalNode *IDENTIFIER();
     antlr4::tree::TerminalNode *COLON();
-    TypeNameContext *typeName();
+    antlr4::tree::TerminalNode *BOOLTYPE();
     antlr4::tree::TerminalNode *EQUAL();
     BooleanExprContext *booleanExpr();
 
@@ -444,23 +444,126 @@ public:
   class  BooleanExprContext : public antlr4::ParserRuleContext {
   public:
     BooleanExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    BooleanExprContext() = default;
+    void copyFrom(BooleanExprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *LOGICALNOT();
-    std::vector<BooleanExprContext *> booleanExpr();
-    BooleanExprContext* booleanExpr(size_t i);
+
+   
+  };
+
+  class  BooleanExprRelOpContext : public BooleanExprContext {
+  public:
+    BooleanExprRelOpContext(BooleanExprContext *ctx);
+
     std::vector<ExprContext *> expr();
     ExprContext* expr(size_t i);
     RelOpContext *relOp();
-    CompOpContext *compOp();
-    antlr4::tree::TerminalNode *TRUE();
-    antlr4::tree::TerminalNode *FALSE();
-    antlr4::tree::TerminalNode *LOGICALOR();
-    antlr4::tree::TerminalNode *LOGICALAND();
-    antlr4::tree::TerminalNode *LOGICALXOR();
-
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
+  };
+
+  class  BooleanFunctionCallContext : public BooleanExprContext {
+  public:
+    BooleanFunctionCallContext(BooleanExprContext *ctx);
+
+    FunctionCallContext *functionCall();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprOrContext : public BooleanExprContext {
+  public:
+    BooleanExprOrContext(BooleanExprContext *ctx);
+
+    std::vector<BooleanExprContext *> booleanExpr();
+    BooleanExprContext* booleanExpr(size_t i);
+    antlr4::tree::TerminalNode *LOGICALOR();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprNotContext : public BooleanExprContext {
+  public:
+    BooleanExprNotContext(BooleanExprContext *ctx);
+
+    antlr4::tree::TerminalNode *LOGICALNOT();
+    BooleanExprContext *booleanExpr();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprCompOpContext : public BooleanExprContext {
+  public:
+    BooleanExprCompOpContext(BooleanExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    CompOpContext *compOp();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprParenContext : public BooleanExprContext {
+  public:
+    BooleanExprParenContext(BooleanExprContext *ctx);
+
+    antlr4::tree::TerminalNode *LPAREN();
+    BooleanExprContext *booleanExpr();
+    antlr4::tree::TerminalNode *RPAREN();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprIdentifierContext : public BooleanExprContext {
+  public:
+    BooleanExprIdentifierContext(BooleanExprContext *ctx);
+
+    antlr4::tree::TerminalNode *IDENTIFIER();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanTrueContext : public BooleanExprContext {
+  public:
+    BooleanTrueContext(BooleanExprContext *ctx);
+
+    antlr4::tree::TerminalNode *TRUE();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanFalseContext : public BooleanExprContext {
+  public:
+    BooleanFalseContext(BooleanExprContext *ctx);
+
+    antlr4::tree::TerminalNode *FALSE();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprXorContext : public BooleanExprContext {
+  public:
+    BooleanExprXorContext(BooleanExprContext *ctx);
+
+    std::vector<BooleanExprContext *> booleanExpr();
+    BooleanExprContext* booleanExpr(size_t i);
+    antlr4::tree::TerminalNode *LOGICALXOR();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  BooleanExprAndContext : public BooleanExprContext {
+  public:
+    BooleanExprAndContext(BooleanExprContext *ctx);
+
+    std::vector<BooleanExprContext *> booleanExpr();
+    BooleanExprContext* booleanExpr(size_t i);
+    antlr4::tree::TerminalNode *LOGICALAND();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
   BooleanExprContext* booleanExpr();

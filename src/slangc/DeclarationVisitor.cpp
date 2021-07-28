@@ -102,6 +102,8 @@ antlrcpp::Any DeclarationVisitor::visitBooleanDeclAssignStmt(SlangGrammarParser:
 }
 
 antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssignContext *ctx) {
+    // We only perform semantic checks in assignment statements during compile and do not update the value
+    // of the symbol in the symbol table
     auto idName = ctx->IDENTIFIER()->getText();
     std::shared_ptr<Symbol> symbol = symbolTable->lookup(idName);
 
@@ -114,26 +116,76 @@ antlrcpp::Any DeclarationVisitor::visitExprAssign(SlangGrammarParser::ExprAssign
         exit(-1);
     }
 
-    if (symbol->isSymbolType(SymbolType::STRING)) {
-        std::shared_ptr<StringSymbol> stringSymbol = std::dynamic_pointer_cast<StringSymbol>(symbol);
-        auto value = visit(ctx->expr());
+    // TODO: test these cases
+    switch (symbol->getSymbolType()) {
+        case SymbolType::STRING: {
+            std::shared_ptr<StringSymbol> stringSymbol = std::dynamic_pointer_cast<StringSymbol>(symbol);
+            auto value = visit(ctx->expr());
 
-        std::string stringVal;
-        try {
-            stringVal = value.as<std::string>();
-        } catch (const std::bad_cast &e) {
-            // TODO: throw error and halt for assigning non-string value to a string value
-            std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
-            std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
-            exit(-1);
+            std::string stringVal;
+            try {
+                value.as<std::string>();
+            } catch (const std::bad_cast &e) {
+                // TODO: throw error and halt for assigning non-string value to a string value
+                std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+                std::cerr << "Cannot assign non-string value to a string variable." << std::endl;
+                exit(-1);
+            }
+
+            break;
         }
 
-        stringSymbol->value = stringVal;
-    } else if (symbol->isSymbolType(SymbolType::INT)) {
-        std::shared_ptr<IntSymbol> intSymbol = std::dynamic_pointer_cast<IntSymbol>(symbol);
-        ExpressionEvaluator<int> evaluator(symbolTable);
-        int value = evaluator.evaluate(ctx->expr());
-        intSymbol->value = value;
+        case SymbolType::INT: {
+            std::shared_ptr<IntSymbol> intSymbol = std::dynamic_pointer_cast<IntSymbol>(symbol);
+            ExpressionEvaluator<int> evaluator(symbolTable);
+            evaluator.evaluate(ctx->expr()); // also performs semantic checks internally
+            break;
+        }
+
+        case SymbolType::FUNCTION: {
+            // TODO: throw error for trying to assign to a function
+            std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+            std::cerr << "Cannot assign to a function as of now. " << std::endl;
+            break;
+        }
+
+        case SymbolType::BOOL: {
+            // We need to perform semantic check for 2 cases here:
+            // id = id1; - both should be boolean type
+            // id = () -> functionCall; - functionCall should return bool
+            // Because these syntaxes are common for both expr and booleanExpr,
+            // they will be parsed as normal expression instead of booleanExpr
+            // and so we are here
+
+            SymbolType rhsType;
+            try {
+                rhsType = visit(ctx).as<SymbolType>();
+            }
+            catch (const std::bad_cast &e) {
+                std::cerr << "[Error] Compiler internal error: could not validate expression at line "
+                        << ctx->IDENTIFIER()->getSymbol()->getLine() << ". " << std::endl;
+                std::cerr << "Reason: Visiting boolean assignment statement did not yield only an identifier on"
+                        << " the right hand side. "
+                        << std::endl;
+                exit(-1);
+            }
+
+            if (rhsType != SymbolType::BOOL) {
+                // as right hand side is not bool
+                // TODO: throw error for LHS as bool identifier and RHS as non-bool
+                std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+                std::cerr << "Assignment of non-bool value on RHS to bool type identifier on LHS. " << std::endl;
+                exit(-1);
+            }
+
+            break;
+        }
+
+        case SymbolType::VOID: {
+            // We won't come here because the compilation will stop whenever a declaration
+            // of a void variable is encountered anyway
+            break;
+        }
     }
 
     return SlangGrammarBaseVisitor::visitExprAssign(ctx);
@@ -232,4 +284,42 @@ std::vector<std::shared_ptr<Symbol>> DeclarationVisitor::parseAndAddFunctionPara
                    });
 
     return paramList;
+}
+
+antlrcpp::Any DeclarationVisitor::visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *ctx) {
+    // lookup and return the symbol type here
+    auto idName = ctx->IDENTIFIER()->getText();
+    std::shared_ptr<Symbol> symbol = symbolTable->lookup(idName);
+    if (symbol == nullptr) {
+        // TODO: throw error and halt for identifier not found
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Unknown identifier: " << idName << std::endl;
+        exit(-1);
+    }
+
+    return symbol->getSymbolType();
+}
+
+antlrcpp::Any DeclarationVisitor::visitFunctionCall(SlangGrammarParser::FunctionCallContext *ctx) {
+    // lookup and return the return type of the function symbol here
+    // TODO: also check passed arguments and their types
+    auto funcIdName = ctx->IDENTIFIER()->getText();
+    std::shared_ptr<Symbol> symbol = symbolTable->lookup(funcIdName);
+
+    if (symbol == nullptr) {
+        // TODO: throw error and halt for identifier not found
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Unknown identifier: " << funcIdName << std::endl;
+        exit(-1);
+    }
+
+    if (symbol->getSymbolType() != SymbolType::FUNCTION) {
+        // TODO: throw error and halt for calling a non-function identifier
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Cannot call " << funcIdName << " as a function. It is not a function. " << std::endl;
+        exit(-1);
+    }
+
+    std::shared_ptr<FunctionSymbol> functionSymbol = std::dynamic_pointer_cast<FunctionSymbol>(symbol);
+    return functionSymbol->returnType;
 }

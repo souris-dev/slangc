@@ -115,7 +115,47 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBooleanExpr(SlangGrammarParser::BooleanExprContext *ctx) override {
+  virtual antlrcpp::Any visitBooleanExprRelOp(SlangGrammarParser::BooleanExprRelOpContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanFunctionCall(SlangGrammarParser::BooleanFunctionCallContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprOr(SlangGrammarParser::BooleanExprOrContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprNot(SlangGrammarParser::BooleanExprNotContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprCompOp(SlangGrammarParser::BooleanExprCompOpContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprParen(SlangGrammarParser::BooleanExprParenContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprIdentifier(SlangGrammarParser::BooleanExprIdentifierContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanTrue(SlangGrammarParser::BooleanTrueContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanFalse(SlangGrammarParser::BooleanFalseContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprXor(SlangGrammarParser::BooleanExprXorContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitBooleanExprAnd(SlangGrammarParser::BooleanExprAndContext *ctx) override {
     return visitChildren(ctx);
   }
 

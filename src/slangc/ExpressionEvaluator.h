@@ -16,6 +16,8 @@ public:
 
     T evaluate(SlangGrammarParser::ExprContext *ctx);
 
+    bool evaluate(SlangGrammarParser::BooleanExprContext *ctx);
+
     antlrcpp::Any visitUnaryMinus(SlangGrammarParser::UnaryMinusContext *ctx) override;
 
     antlrcpp::Any visitExprDivide(SlangGrammarParser::ExprDivideContext *ctx) override;
@@ -35,6 +37,28 @@ public:
     antlrcpp::Any visitExprDecint(SlangGrammarParser::ExprDecintContext *ctx) override;
 
     antlrcpp::Any visitExprString(SlangGrammarParser::ExprStringContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprNot(SlangGrammarParser::BooleanExprNotContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprOr(SlangGrammarParser::BooleanExprOrContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprAnd(SlangGrammarParser::BooleanExprAndContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprXor(SlangGrammarParser::BooleanExprXorContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprRelOp(SlangGrammarParser::BooleanExprRelOpContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprCompOp(SlangGrammarParser::BooleanExprCompOpContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprParen(SlangGrammarParser::BooleanExprParenContext *ctx) override;
+
+    antlrcpp::Any visitBooleanExprIdentifier(SlangGrammarParser::BooleanExprIdentifierContext *ctx) override;
+
+    antlrcpp::Any visitBooleanTrue(SlangGrammarParser::BooleanTrueContext *ctx) override;
+
+    antlrcpp::Any visitBooleanFalse(SlangGrammarParser::BooleanFalseContext *ctx) override;
+
+    antlrcpp::Any visitBooleanFunctionCall(SlangGrammarParser::BooleanFunctionCallContext *ctx) override;
 
 private:
     std::shared_ptr<SymbolTable> symbolTable;

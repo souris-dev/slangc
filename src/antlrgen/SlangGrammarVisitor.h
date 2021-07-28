@@ -69,7 +69,27 @@ public:
 
     virtual antlrcpp::Any visitWhileStmt(SlangGrammarParser::WhileStmtContext *context) = 0;
 
-    virtual antlrcpp::Any visitBooleanExpr(SlangGrammarParser::BooleanExprContext *context) = 0;
+    virtual antlrcpp::Any visitBooleanExprRelOp(SlangGrammarParser::BooleanExprRelOpContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanFunctionCall(SlangGrammarParser::BooleanFunctionCallContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprOr(SlangGrammarParser::BooleanExprOrContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprNot(SlangGrammarParser::BooleanExprNotContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprCompOp(SlangGrammarParser::BooleanExprCompOpContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprParen(SlangGrammarParser::BooleanExprParenContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprIdentifier(SlangGrammarParser::BooleanExprIdentifierContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanTrue(SlangGrammarParser::BooleanTrueContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanFalse(SlangGrammarParser::BooleanFalseContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprXor(SlangGrammarParser::BooleanExprXorContext *context) = 0;
+
+    virtual antlrcpp::Any visitBooleanExprAnd(SlangGrammarParser::BooleanExprAndContext *context) = 0;
 
     virtual antlrcpp::Any visitCompOp(SlangGrammarParser::CompOpContext *context) = 0;
 

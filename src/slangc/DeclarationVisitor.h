@@ -30,6 +30,10 @@ public:
 
     antlrcpp::Any visitExprAssign(SlangGrammarParser::ExprAssignContext *ctx) override;
 
+    antlrcpp::Any visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *ctx) override;
+
+    antlrcpp::Any visitFunctionCall(SlangGrammarParser::FunctionCallContext *ctx) override;
+
     antlrcpp::Any visitBooleanExprAssign(SlangGrammarParser::BooleanExprAssignContext *ctx) override;
 
     antlrcpp::Any visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *ctx) override;

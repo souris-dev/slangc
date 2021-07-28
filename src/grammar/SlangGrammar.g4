@@ -112,7 +112,7 @@ declStmt: VARDEF IDENTIFIER COLON typeName;
 typeName: INTTYPE | STRINGTYPE | VOIDTYPE | BOOLTYPE;
 
 declAssignStmt: VARDEF IDENTIFIER COLON typeName EQUAL expr #normalDeclAssignStmt
-              | VARDEF IDENTIFIER COLON typeName EQUAL booleanExpr #booleanDeclAssignStmt;
+              | VARDEF IDENTIFIER COLON BOOLTYPE EQUAL booleanExpr #booleanDeclAssignStmt;
 
 block: LCURLYBR RCURLYBR
      | LCURLYBR statements RCURLYBR;
@@ -125,13 +125,17 @@ ifStmt: IF LPAREN booleanExpr RPAREN block
 whileStmt: WHILE LPAREN booleanExpr RPAREN block
          | WHILE LPAREN IDENTIFIER RPAREN block;
 
-booleanExpr: LOGICALNOT booleanExpr
-           | booleanExpr LOGICALOR booleanExpr
-           | booleanExpr LOGICALAND booleanExpr
-           | booleanExpr LOGICALXOR booleanExpr
-           | expr (relOp | compOp) expr
-           | TRUE
-           | FALSE;
+booleanExpr: LOGICALNOT booleanExpr #booleanExprNot
+           | booleanExpr LOGICALOR booleanExpr #booleanExprOr
+           | booleanExpr LOGICALAND booleanExpr #booleanExprAnd
+           | booleanExpr LOGICALXOR booleanExpr #booleanExprXor
+           | expr relOp expr #booleanExprRelOp
+           | expr compOp expr #booleanExprCompOp
+           | LPAREN booleanExpr RPAREN #booleanExprParen
+           | IDENTIFIER #booleanExprIdentifier
+           | TRUE #booleanTrue
+           | FALSE #booleanFalse
+           | functionCall #booleanFunctionCall;
 
 compOp: (COMP | COMPNOTEQ);
 

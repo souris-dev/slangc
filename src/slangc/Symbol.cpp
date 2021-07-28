@@ -27,6 +27,10 @@ inline bool FunctionSymbol::isSymbolType(SymbolType tag) {
     return (tag == SymbolType::FUNCTION);
 }
 
+inline SymbolType FunctionSymbol::getSymbolType() {
+    return SymbolType::FUNCTION;
+}
+
 FunctionSymbol::FunctionSymbol(std::string name, size_t firstAppearedLine,
                                std::vector<std::shared_ptr<Symbol>> paramList) : Symbol(std::move(name),
                                                                                         firstAppearedLine),
@@ -57,6 +61,9 @@ bool IntSymbol::isSymbolType(SymbolType tag) {
     return (tag == SymbolType::INT);
 }
 
+inline SymbolType IntSymbol::getSymbolType() {
+    return SymbolType::INT;
+}
 
 /* StringSymbol methods */
 
@@ -70,6 +77,10 @@ bool StringSymbol::isSymbolType(SymbolType tag) {
     return (tag == SymbolType::STRING);
 }
 
+inline SymbolType StringSymbol::getSymbolType() {
+    return SymbolType::STRING;
+}
+
 /* BoolSymbol methods */
 
 BoolSymbol::BoolSymbol(std::string name, size_t firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
@@ -80,4 +91,8 @@ BoolSymbol::BoolSymbol(std::string name, size_t firstAppearedLine, bool value) :
 
 bool BoolSymbol::isSymbolType(SymbolType tag) {
     return (tag == SymbolType::BOOL);
+}
+
+inline SymbolType BoolSymbol::getSymbolType() {
+    return SymbolType::BOOL;
 }

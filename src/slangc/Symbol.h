@@ -33,6 +33,8 @@ public:
 
     virtual bool isSymbolType(SymbolType tag) = 0;
 
+    virtual SymbolType getSymbolType() = 0;
+
     bool hasTypeTag(TypeTag tag);
 };
 
@@ -50,6 +52,8 @@ public:
                    SymbolType returnType);
 
     bool isSymbolType(SymbolType tag) override;
+
+    SymbolType getSymbolType() override;
 };
 
 /* Integer Symbol */
@@ -62,6 +66,8 @@ public:
     IntSymbol(std::string name, size_t firstAppearedLine, int value);
 
     bool isSymbolType(SymbolType tag) override;
+
+    SymbolType getSymbolType() override;
 };
 
 /* String Symbol */
@@ -74,6 +80,8 @@ public:
     StringSymbol(std::string name, size_t firstAppearedLine, std::string value);
 
     bool isSymbolType(SymbolType tag) override;
+
+    SymbolType getSymbolType() override;
 };
 
 /* Bool Symbol */
@@ -86,6 +94,8 @@ public:
     BoolSymbol(std::string name, size_t firstAppearedLine, bool value);
 
     bool isSymbolType(SymbolType tag) override;
+
+    SymbolType getSymbolType() override;
 };
 
 #endif //SLANG_SYMBOL_H

@@ -1,6 +1,32 @@
 ## TODOs
 - Add checks for redefinition of variables during declarations. (pretty easy to do).
 
+- We probably don't want to assign variables the value of the expression in assignment statements. Reason: suppose we have a case like this:
+
+```
+introducing afunc(var1: int) {
+  if (var1 > 3) {
+     var1 = 5;
+  }
+} -> void;
+```
+Clearly, above the `var1 = 5` statement will only be run if the condition is true. Hence,
+this statement should be only executed at run time and the value 5 should not be assigned in the symbol table to var1 just because it appears as an assignment statement in a block.
+However, a case of declaration + assignment (or only declaration) statement will be acceptable to be processed at compile time and the value added to the symbol table, for example:
+
+```
+introducing afunc(var1: int) {
+  if (var1 > 3) {
+    bro, var2: int = 10 * 4;
+    (var2) -> print;
+  }
+} -> void;
+```
+
+- Regarding the previous point, we still want to subject the assignment statement to semantic checks during compile time. Hence, a good way to go about this would be to keep the semantic checks, but not update the symbol table after expression evaluation and type checking. That is, do not "execute" the statement by modifying the symbol table with the new value - only subject it to symantic checks.
+
+- Modify symbol entries to mark which symbols will have their values computed at runtime. Any assignment or declaration+assignment statement that has another identifier and/or a function call in its RHS will have to be evaluated at runtime.
+
 ## Arrays
 
 Q1 - Syntax for declaration?

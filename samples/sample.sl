@@ -16,7 +16,7 @@ bro, lol: string = "Result is: ";
 
 \\* Function definition *\\
 introducing main(var1: int, var2: string) {
-    bro, sum: int = 0;
+    bro, sum: int = 1 + 3 * 6;
 
     \\* Loop *\\
     while (var1 < 4) {
@@ -30,6 +30,6 @@ introducing main(var1: int, var2: string) {
 \\ bro, res: int = (initCounter, lol) -> main;
 
 \\* Function call statement *\\
-(res) -> print;
+(res) -> main;
 
 </SLANG>
