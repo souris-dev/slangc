@@ -154,7 +154,8 @@ funcArgList: args+=argParam
            | (args+=argParam COMMA)+ args+=argParam;
 argParam: IDENTIFIER COLON typeName;
 
-callArgList: callParams+=expr
-           | (callParams+=expr COMMA)+ callParams+=expr;
-functionCall: LPAREN RPAREN RIGHTARROW IDENTIFIER
-            | LPAREN callArgList RPAREN RIGHTARROW IDENTIFIER;
+callArgList: (callParams+=expr COMMA)? (booleanCallParams+=booleanExpr COMMA)?
+                (callParams+=expr COMMA)? (booleanCallParams+=booleanExpr COMMA)?
+                    (callParams+=expr | booleanCallParams+=booleanExpr);
+functionCall: LPAREN RPAREN RIGHTARROW IDENTIFIER #functionCallNoArgs
+            | LPAREN callArgList RPAREN RIGHTARROW IDENTIFIER #functionCallWithArgs;

@@ -4,8 +4,7 @@
 #include "antlr4-runtime.h"
 #include "antlrgen/SlangGrammarLexer.h"
 #include "antlrgen/SlangGrammarParser.h"
-#include "slangc/DeclarationVisitor.h"
-#include "slangc/SymbolTable.h"
+#include "slangc/StaticTypesChecker.h"
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -33,8 +32,8 @@ int main(int argc, char *argv[]) {
     std::shared_ptr<SymbolTable> symbolTablePtr(new SymbolTable());
 
     std::cout << "Visiting declarations..." << std::endl;
-    DeclarationVisitor declarationVisitor(symbolTablePtr);
-    declarationVisitor.visit(tree);
+    StaticTypesChecker staticTypesChecker(symbolTablePtr);
+    staticTypesChecker.visit(tree);
 
     std::cout << "Dumping table: " << std::endl;
     symbolTablePtr->dump();

@@ -19,6 +19,7 @@ introducing main(var1: int, var2: string) {
     bro, sum: int = 1 + 3 * 6;
 
     \\* Loop *\\
+    @blockname while1
     while (var1 < 4) {
         sum = sum + 1;
     }

@@ -107,7 +107,9 @@ public:
 
     virtual antlrcpp::Any visitCallArgList(SlangGrammarParser::CallArgListContext *context) = 0;
 
-    virtual antlrcpp::Any visitFunctionCall(SlangGrammarParser::FunctionCallContext *context) = 0;
+    virtual antlrcpp::Any visitFunctionCallNoArgs(SlangGrammarParser::FunctionCallNoArgsContext *context) = 0;
+
+    virtual antlrcpp::Any visitFunctionCallWithArgs(SlangGrammarParser::FunctionCallWithArgsContext *context) = 0;
 
 
 };

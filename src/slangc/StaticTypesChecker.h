@@ -2,13 +2,14 @@
 // Created by suore on 15-07-2021.
 //
 
-#ifndef SLANG_DECLARATIONVISITOR_H
-#define SLANG_DECLARATIONVISITOR_H
+#ifndef SLANG_STATICTYPESCHECKER_H
+#define SLANG_STATICTYPESCHECKER_H
 
 #include "../antlrgen/SlangGrammarBaseVisitor.h"
 #include "SymbolTable.h"
+#include "FunctionCallExprChecker.h"
 
-class DeclarationVisitor : public SlangGrammarBaseVisitor {
+class StaticTypesChecker : public SlangGrammarBaseVisitor {
 private:
     std::shared_ptr<SymbolTable> symbolTable = nullptr;
 
@@ -16,7 +17,7 @@ private:
     std::vector<std::shared_ptr<Symbol>> parseAndAddFunctionParams(T *ctx);
 
 public:
-    explicit DeclarationVisitor(std::shared_ptr<SymbolTable> symbolTableRef);
+    explicit StaticTypesChecker(std::shared_ptr<SymbolTable> symbolTableRef);
 
     antlrcpp::Any visitProgram(SlangGrammarParser::ProgramContext *ctx) override;
 
@@ -32,7 +33,9 @@ public:
 
     antlrcpp::Any visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *ctx) override;
 
-    antlrcpp::Any visitFunctionCall(SlangGrammarParser::FunctionCallContext *ctx) override;
+    antlrcpp::Any visitFunctionCallWithArgs(SlangGrammarParser::FunctionCallWithArgsContext *ctx) override;
+
+    antlrcpp::Any visitFunctionCallNoArgs(SlangGrammarParser::FunctionCallNoArgsContext *ctx) override;
 
     antlrcpp::Any visitBooleanExprAssign(SlangGrammarParser::BooleanExprAssignContext *ctx) override;
 
@@ -42,4 +45,4 @@ public:
 };
 
 
-#endif //SLANG_DECLARATIONVISITOR_H
+#endif //SLANG_STATICTYPESCHECKER_H

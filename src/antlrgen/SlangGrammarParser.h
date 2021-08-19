@@ -697,12 +697,16 @@ public:
   public:
     SlangGrammarParser::ExprContext *exprContext = nullptr;
     std::vector<ExprContext *> callParams;
+    SlangGrammarParser::BooleanExprContext *booleanExprContext = nullptr;
+    std::vector<BooleanExprContext *> booleanCallParams;
     CallArgListContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    std::vector<ExprContext *> expr();
-    ExprContext* expr(size_t i);
     std::vector<antlr4::tree::TerminalNode *> COMMA();
     antlr4::tree::TerminalNode* COMMA(size_t i);
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+    std::vector<BooleanExprContext *> booleanExpr();
+    BooleanExprContext* booleanExpr(size_t i);
 
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -714,16 +718,39 @@ public:
   class  FunctionCallContext : public antlr4::ParserRuleContext {
   public:
     FunctionCallContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    FunctionCallContext() = default;
+    void copyFrom(FunctionCallContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  FunctionCallWithArgsContext : public FunctionCallContext {
+  public:
+    FunctionCallWithArgsContext(FunctionCallContext *ctx);
+
+    antlr4::tree::TerminalNode *LPAREN();
+    CallArgListContext *callArgList();
+    antlr4::tree::TerminalNode *RPAREN();
+    antlr4::tree::TerminalNode *RIGHTARROW();
+    antlr4::tree::TerminalNode *IDENTIFIER();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  FunctionCallNoArgsContext : public FunctionCallContext {
+  public:
+    FunctionCallNoArgsContext(FunctionCallContext *ctx);
+
     antlr4::tree::TerminalNode *LPAREN();
     antlr4::tree::TerminalNode *RPAREN();
     antlr4::tree::TerminalNode *RIGHTARROW();
     antlr4::tree::TerminalNode *IDENTIFIER();
-    CallArgListContext *callArgList();
-
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
   };
 
   FunctionCallContext* functionCall();
