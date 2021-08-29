@@ -26,7 +26,7 @@ antlrcpp::Any StringExpressionChecker::visitExprPlus(SlangGrammarParser::ExprPlu
 
 antlrcpp::Any StringExpressionChecker::visitFunctionCallNoArgs(SlangGrammarParser::FunctionCallNoArgsContext *ctx) {
     auto returnSymbolType = FunctionCallExprChecker::visitFunctionCallNoArgs(ctx, symbolTable).as<SymbolType>();
-    if (returnSymbolType == SymbolType::INT) {
+    if (returnSymbolType == SymbolType::STRING) {
         return true;
     }
     else {
@@ -39,7 +39,7 @@ antlrcpp::Any StringExpressionChecker::visitFunctionCallNoArgs(SlangGrammarParse
 
 antlrcpp::Any StringExpressionChecker::visitFunctionCallWithArgs(SlangGrammarParser::FunctionCallWithArgsContext *ctx) {
     auto returnSymbolType = FunctionCallExprChecker::visitFunctionCallWithArgs(ctx, symbolTable).as<SymbolType>();
-    if (returnSymbolType == SymbolType::INT) {
+    if (returnSymbolType == SymbolType::STRING) {
         return true;
     }
     else {
@@ -48,4 +48,8 @@ antlrcpp::Any StringExpressionChecker::visitFunctionCallWithArgs(SlangGrammarPar
                   << SymbolUtils::getSymbolTypeAsString(returnSymbolType) << "." << std::endl;
         return false;
     }
+}
+
+antlrcpp::Any StringExpressionChecker::checkExpr(SlangGrammarParser::ExprContext *ctx) {
+    return visit(ctx);
 }

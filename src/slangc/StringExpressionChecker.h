@@ -12,6 +12,8 @@ class StringExpressionChecker : public ExpressionChecker {
 public:
     explicit StringExpressionChecker(std::shared_ptr<SymbolTable> symbolTable);
 
+    antlrcpp::Any checkExpr(SlangGrammarParser::ExprContext *ctx) override;
+
     antlrcpp::Any visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *ctx) override;
 
     antlrcpp::Any visitExprString(SlangGrammarParser::ExprStringContext *ctx) override;
