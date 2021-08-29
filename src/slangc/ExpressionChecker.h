@@ -68,5 +68,4 @@ protected:
     antlrcpp::Any checkIdentifierTypeInExpr(T *ctx, SymbolType expectedType);
 };
 
-
 #endif //SLANG_EXPRESSIONCHECKER_H

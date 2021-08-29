@@ -129,3 +129,7 @@ antlrcpp::Any ExpressionChecker::checkIdentifierTypeInExpr(T *ctx, SymbolType ex
         exit(-1);
     }
 }
+
+// explicit template instantiations to prevent linker errors
+template antlrcpp::Any ExpressionChecker::checkIdentifierTypeInExpr<SlangGrammarParser::BooleanExprIdentifierContext>(SlangGrammarParser::BooleanExprIdentifierContext*, SymbolType);
+template antlrcpp::Any ExpressionChecker::checkIdentifierTypeInExpr<SlangGrammarParser::ExprIdentifierContext>(SlangGrammarParser::ExprIdentifierContext*, SymbolType);
