@@ -6,6 +6,8 @@
 \\* note that "bro," or "sis," or the words "def" or "var" can be used for this *\\
 bro, initCounter: int = 5;
 bro, lol: string = "Result is: ";
+bro, someBoolVal: booly = false || true;
+bro, anotherBoolVal: booly = someBoolVal and false || (true strictor someBoolVal);
 
 \\* Can we use "bhai," or "behen," too :-)) *\\
 
@@ -20,8 +22,12 @@ introducing main(var1: int, var2: string) {
 
     \\* Loop *\\
     \\* @blockname while1 *\\
-    while (var1 < 4) {
+    while ((var1 < 4) and (var1 > 10 + 4)) {
         sum = sum + 1;
+    }
+
+    if (1 == "lol") {
+        sum = 0;
     }
 
     return sum;

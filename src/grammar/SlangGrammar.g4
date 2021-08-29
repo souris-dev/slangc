@@ -34,7 +34,8 @@ COMPNOTEQ: '!=';
 MARKERCOMMULTILINESTART: '\\\\*';
 MARKERCOMMULTILINEEND: '*\\\\';
 MARKERCOMSINGLELINE: ('\\\\-' | 'binod');
-COMMENT : MARKERCOMSINGLELINE ~[\r\n]* '\r'? '\n' -> skip ;
+COMMENTSL : MARKERCOMSINGLELINE ~[\r\n]* '\r'? '\n' -> skip ;
+COMMENTML: MARKERCOMMULTILINESTART .*? MARKERCOMMULTILINEEND -> skip;
 
 LOGICALAND: ('and' | '&&');
 LOGICALOR: ('or' | '||');
@@ -86,8 +87,7 @@ program: EOF
         | PROGSTART statements PROGEND
         | statements EOF;
 
-statements: (statement | compoundStmt | funcDef | commentMultiline)+;
-commentMultiline: MARKERCOMMULTILINESTART .*? MARKERCOMMULTILINEEND;
+statements: (statement | compoundStmt | funcDef | COMMENTSL | COMMENTML)+;
 
 statement: (declStmt | assignStmt | declAssignStmt | functionCall | returnStmt) STATEMENTEND;
 
@@ -111,19 +111,16 @@ expr: MINUS expr #unaryMinus
 declStmt: VARDEF IDENTIFIER COLON typeName;
 typeName: INTTYPE | STRINGTYPE | VOIDTYPE | BOOLTYPE;
 
-declAssignStmt: VARDEF IDENTIFIER COLON typeName EQUAL expr #normalDeclAssignStmt
-              | VARDEF IDENTIFIER COLON BOOLTYPE EQUAL booleanExpr #booleanDeclAssignStmt;
+declAssignStmt: VARDEF IDENTIFIER COLON BOOLTYPE EQUAL booleanExpr #booleanDeclAssignStmt
+              | VARDEF IDENTIFIER COLON typeName EQUAL expr #normalDeclAssignStmt;
 
 block: LCURLYBR RCURLYBR
      | LCURLYBR statements RCURLYBR;
 
 ifStmt: IF LPAREN booleanExpr RPAREN block
-      | IF LPAREN booleanExpr RPAREN block ELSE block
-      | IF LPAREN IDENTIFIER RPAREN block
-      | IF LPAREN IDENTIFIER RPAREN block ELSE block;
+      | IF LPAREN booleanExpr RPAREN block ELSE block;
 
-whileStmt: WHILE LPAREN booleanExpr RPAREN block
-         | WHILE LPAREN IDENTIFIER RPAREN block;
+whileStmt: WHILE LPAREN booleanExpr RPAREN block;
 
 booleanExpr: LOGICALNOT booleanExpr #booleanExprNot
            | booleanExpr LOGICALOR booleanExpr #booleanExprOr

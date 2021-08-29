@@ -124,8 +124,8 @@ antlrcpp::Any ExpressionChecker::checkIdentifierTypeInExpr(T *ctx, SymbolType ex
         // TODO: Throw error for wrong type
         std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
         std::cerr << "The identifier " << idName << " has a type mismatch with the expected result of the expression. ";
-        std::cerr << "Expected type is " << symbol->getSymbolTypeAsString()
-                    << " but the identifier has a different type. " << std::endl;
+        std::cerr << "Expected type is " << SymbolUtils::getSymbolTypeAsString(expectedType)
+                    << " but the identifier is of type " << symbol->getSymbolTypeAsString() << std::endl;
         exit(-1);
     }
 }

@@ -348,3 +348,13 @@ antlrcpp::Any StaticTypesChecker::visitFunctionCallWithArgs(SlangGrammarParser::
 antlrcpp::Any StaticTypesChecker::visitFunctionCallNoArgs(SlangGrammarParser::FunctionCallNoArgsContext *ctx) {
     return FunctionCallExprChecker::visitFunctionCallNoArgs(ctx, symbolTable);
 }
+
+antlrcpp::Any StaticTypesChecker::visitIfStmt(SlangGrammarParser::IfStmtContext *ctx) {
+    BoolExpressionChecker boolExpressionChecker(symbolTable);
+    return boolExpressionChecker.checkExpr(ctx->booleanExpr());
+}
+
+antlrcpp::Any StaticTypesChecker::visitWhileStmt(SlangGrammarParser::WhileStmtContext *ctx) {
+    BoolExpressionChecker boolExpressionChecker(symbolTable);
+    return boolExpressionChecker.checkExpr(ctx->booleanExpr());
+}

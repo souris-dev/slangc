@@ -16,22 +16,22 @@ public:
     LSQBR = 7, RSQBR = 8, PLUS = 9, MINUS = 10, DIVIDE = 11, MULT = 12, 
     MODULO = 13, EQUAL = 14, LT = 15, GT = 16, LTEQ = 17, GTEQ = 18, COMP = 19, 
     COMPNOTEQ = 20, MARKERCOMMULTILINESTART = 21, MARKERCOMMULTILINEEND = 22, 
-    MARKERCOMSINGLELINE = 23, COMMENT = 24, LOGICALAND = 25, LOGICALOR = 26, 
-    LOGICALXOR = 27, LOGICALNOT = 28, TRUE = 29, FALSE = 30, IF = 31, ELSE = 32, 
-    FUNCDEF = 33, VARDEF = 34, BINAND = 35, BINOR = 36, BINXOR = 37, BINNOT = 38, 
-    RIGHTARROW = 39, COLON = 40, STATEMENTEND = 41, WHILE = 42, RETURN = 43, 
-    INTTYPE = 44, STRINGTYPE = 45, BOOLTYPE = 46, VOIDTYPE = 47, NULLVALUE = 48, 
-    DECINT = 49, IDENTIFIER = 50, STRING = 51, COMMA = 52, NEWLINE = 53, 
-    TAB = 54, WHITESPACE = 55, OTHER = 56
+    MARKERCOMSINGLELINE = 23, COMMENTSL = 24, COMMENTML = 25, LOGICALAND = 26, 
+    LOGICALOR = 27, LOGICALXOR = 28, LOGICALNOT = 29, TRUE = 30, FALSE = 31, 
+    IF = 32, ELSE = 33, FUNCDEF = 34, VARDEF = 35, BINAND = 36, BINOR = 37, 
+    BINXOR = 38, BINNOT = 39, RIGHTARROW = 40, COLON = 41, STATEMENTEND = 42, 
+    WHILE = 43, RETURN = 44, INTTYPE = 45, STRINGTYPE = 46, BOOLTYPE = 47, 
+    VOIDTYPE = 48, NULLVALUE = 49, DECINT = 50, IDENTIFIER = 51, STRING = 52, 
+    COMMA = 53, NEWLINE = 54, TAB = 55, WHITESPACE = 56, OTHER = 57
   };
 
   enum {
-    RuleProgram = 0, RuleStatements = 1, RuleCommentMultiline = 2, RuleStatement = 3, 
-    RuleReturnStmt = 4, RuleAssignStmt = 5, RuleExpr = 6, RuleDeclStmt = 7, 
-    RuleTypeName = 8, RuleDeclAssignStmt = 9, RuleBlock = 10, RuleIfStmt = 11, 
-    RuleWhileStmt = 12, RuleBooleanExpr = 13, RuleCompOp = 14, RuleRelOp = 15, 
-    RuleCompoundStmt = 16, RuleFuncDef = 17, RuleFuncArgList = 18, RuleArgParam = 19, 
-    RuleCallArgList = 20, RuleFunctionCall = 21
+    RuleProgram = 0, RuleStatements = 1, RuleStatement = 2, RuleReturnStmt = 3, 
+    RuleAssignStmt = 4, RuleExpr = 5, RuleDeclStmt = 6, RuleTypeName = 7, 
+    RuleDeclAssignStmt = 8, RuleBlock = 9, RuleIfStmt = 10, RuleWhileStmt = 11, 
+    RuleBooleanExpr = 12, RuleCompOp = 13, RuleRelOp = 14, RuleCompoundStmt = 15, 
+    RuleFuncDef = 16, RuleFuncArgList = 17, RuleArgParam = 18, RuleCallArgList = 19, 
+    RuleFunctionCall = 20
   };
 
   explicit SlangGrammarParser(antlr4::TokenStream *input);
@@ -46,7 +46,6 @@ public:
 
   class ProgramContext;
   class StatementsContext;
-  class CommentMultilineContext;
   class StatementContext;
   class ReturnStmtContext;
   class AssignStmtContext;
@@ -93,8 +92,10 @@ public:
     CompoundStmtContext* compoundStmt(size_t i);
     std::vector<FuncDefContext *> funcDef();
     FuncDefContext* funcDef(size_t i);
-    std::vector<CommentMultilineContext *> commentMultiline();
-    CommentMultilineContext* commentMultiline(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COMMENTSL();
+    antlr4::tree::TerminalNode* COMMENTSL(size_t i);
+    std::vector<antlr4::tree::TerminalNode *> COMMENTML();
+    antlr4::tree::TerminalNode* COMMENTML(size_t i);
 
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -102,20 +103,6 @@ public:
   };
 
   StatementsContext* statements();
-
-  class  CommentMultilineContext : public antlr4::ParserRuleContext {
-  public:
-    CommentMultilineContext(antlr4::ParserRuleContext *parent, size_t invokingState);
-    virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *MARKERCOMMULTILINESTART();
-    antlr4::tree::TerminalNode *MARKERCOMMULTILINEEND();
-
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
-  };
-
-  CommentMultilineContext* commentMultiline();
 
   class  StatementContext : public antlr4::ParserRuleContext {
   public:
@@ -414,7 +401,6 @@ public:
     std::vector<BlockContext *> block();
     BlockContext* block(size_t i);
     antlr4::tree::TerminalNode *ELSE();
-    antlr4::tree::TerminalNode *IDENTIFIER();
 
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -432,7 +418,6 @@ public:
     BooleanExprContext *booleanExpr();
     antlr4::tree::TerminalNode *RPAREN();
     BlockContext *block();
-    antlr4::tree::TerminalNode *IDENTIFIER();
 
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;

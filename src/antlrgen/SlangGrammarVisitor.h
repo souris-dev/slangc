@@ -23,8 +23,6 @@ public:
 
     virtual antlrcpp::Any visitStatements(SlangGrammarParser::StatementsContext *context) = 0;
 
-    virtual antlrcpp::Any visitCommentMultiline(SlangGrammarParser::CommentMultilineContext *context) = 0;
-
     virtual antlrcpp::Any visitStatement(SlangGrammarParser::StatementContext *context) = 0;
 
     virtual antlrcpp::Any visitReturnStmt(SlangGrammarParser::ReturnStmtContext *context) = 0;
@@ -59,9 +57,9 @@ public:
 
     virtual antlrcpp::Any visitTypeName(SlangGrammarParser::TypeNameContext *context) = 0;
 
-    virtual antlrcpp::Any visitNormalDeclAssignStmt(SlangGrammarParser::NormalDeclAssignStmtContext *context) = 0;
-
     virtual antlrcpp::Any visitBooleanDeclAssignStmt(SlangGrammarParser::BooleanDeclAssignStmtContext *context) = 0;
+
+    virtual antlrcpp::Any visitNormalDeclAssignStmt(SlangGrammarParser::NormalDeclAssignStmtContext *context) = 0;
 
     virtual antlrcpp::Any visitBlock(SlangGrammarParser::BlockContext *context) = 0;
 

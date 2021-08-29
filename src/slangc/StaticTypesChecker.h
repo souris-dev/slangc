@@ -42,6 +42,10 @@ public:
     antlrcpp::Any visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *ctx) override;
 
     antlrcpp::Any visitExplicitRetTypeFuncDef(SlangGrammarParser::ExplicitRetTypeFuncDefContext *ctx) override;
+
+    antlrcpp::Any visitIfStmt(SlangGrammarParser::IfStmtContext *ctx) override;
+
+    antlrcpp::Any visitWhileStmt(SlangGrammarParser::WhileStmtContext *ctx) override;
 };
 
 

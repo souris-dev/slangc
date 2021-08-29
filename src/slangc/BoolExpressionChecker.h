@@ -12,6 +12,7 @@ class BoolExpressionChecker : public ExpressionChecker {
 public:
     explicit BoolExpressionChecker(std::shared_ptr<SymbolTable> symbolTable);
 
+    // this checkExpr is NOT an override, it is an overload (see the argument type)
     antlrcpp::Any checkExpr(SlangGrammarParser::BooleanExprContext *ctx);
 
     antlrcpp::Any visitBooleanExprNot(SlangGrammarParser::BooleanExprNotContext *ctx) override;

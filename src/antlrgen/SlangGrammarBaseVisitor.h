@@ -23,10 +23,6 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCommentMultiline(SlangGrammarParser::CommentMultilineContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitStatement(SlangGrammarParser::StatementContext *ctx) override {
     return visitChildren(ctx);
   }
@@ -95,11 +91,11 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitNormalDeclAssignStmt(SlangGrammarParser::NormalDeclAssignStmtContext *ctx) override {
+  virtual antlrcpp::Any visitBooleanDeclAssignStmt(SlangGrammarParser::BooleanDeclAssignStmtContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBooleanDeclAssignStmt(SlangGrammarParser::BooleanDeclAssignStmtContext *ctx) override {
+  virtual antlrcpp::Any visitNormalDeclAssignStmt(SlangGrammarParser::NormalDeclAssignStmtContext *ctx) override {
     return visitChildren(ctx);
   }
 
