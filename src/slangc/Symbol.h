@@ -18,6 +18,15 @@ enum SymbolType {
     FUNCTION, INT, STRING, BOOL, VOID
 };
 
+class SymbolUtils {
+public:
+    static std::string getSymbolTypeAsString(const SymbolType& symbolType);
+
+    static bool canTypeBeUsedWithRelOp(const SymbolType& symbolType);
+
+    static bool canTypeBeUsedWithCompOp(const SymbolType& symbolType);
+};
+
 class Symbol {
 public:
     std::string name;
@@ -34,6 +43,8 @@ public:
     virtual bool isSymbolType(SymbolType tag) = 0;
 
     virtual SymbolType getSymbolType() = 0;
+
+    virtual std::string getSymbolTypeAsString() = 0;
 
     bool hasTypeTag(TypeTag tag);
 };
@@ -54,6 +65,8 @@ public:
     bool isSymbolType(SymbolType tag) override;
 
     SymbolType getSymbolType() override;
+
+    std::string getSymbolTypeAsString() override;
 };
 
 /* Integer Symbol */
@@ -68,6 +81,8 @@ public:
     bool isSymbolType(SymbolType tag) override;
 
     SymbolType getSymbolType() override;
+
+    std::string getSymbolTypeAsString() override;
 };
 
 /* String Symbol */
@@ -82,6 +97,8 @@ public:
     bool isSymbolType(SymbolType tag) override;
 
     SymbolType getSymbolType() override;
+
+    std::string getSymbolTypeAsString() override;
 };
 
 /* Bool Symbol */
@@ -96,6 +113,8 @@ public:
     bool isSymbolType(SymbolType tag) override;
 
     SymbolType getSymbolType() override;
+
+    std::string getSymbolTypeAsString() override;
 };
 
 #endif //SLANG_SYMBOL_H

@@ -34,7 +34,16 @@ public:
 
     antlrcpp::Any visitBooleanFalse(SlangGrammarParser::BooleanFalseContext *ctx) override;
 
-    antlrcpp::Any visitBooleanFunctionCall(SlangGrammarParser::BooleanFunctionCallContext *ctx) override;
+    antlrcpp::Any visitFunctionCallNoArgs(SlangGrammarParser::FunctionCallNoArgsContext *ctx) override;
+
+    antlrcpp::Any visitFunctionCallWithArgs(SlangGrammarParser::FunctionCallWithArgsContext *ctx) override;
+
+private:
+    template<class T>
+    bool checkBinaryOp(T *ctx);
+
+    template<class T>
+    bool checkUnaryOp(T *ctx);
 };
 
 

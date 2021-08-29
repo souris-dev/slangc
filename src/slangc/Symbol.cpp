@@ -48,6 +48,10 @@ FunctionSymbol::FunctionSymbol(std::string name, size_t firstAppearedLine,
 
 }
 
+std::string FunctionSymbol::getSymbolTypeAsString() {
+    return "function";
+}
+
 
 /* IntSymbol methods */
 
@@ -63,6 +67,10 @@ bool IntSymbol::isSymbolType(SymbolType tag) {
 
 inline SymbolType IntSymbol::getSymbolType() {
     return SymbolType::INT;
+}
+
+std::string IntSymbol::getSymbolTypeAsString() {
+    return "int";
 }
 
 /* StringSymbol methods */
@@ -81,6 +89,10 @@ inline SymbolType StringSymbol::getSymbolType() {
     return SymbolType::STRING;
 }
 
+std::string StringSymbol::getSymbolTypeAsString() {
+    return "string";
+}
+
 /* BoolSymbol methods */
 
 BoolSymbol::BoolSymbol(std::string name, size_t firstAppearedLine) : Symbol(std::move(name), firstAppearedLine) {}
@@ -95,4 +107,80 @@ bool BoolSymbol::isSymbolType(SymbolType tag) {
 
 inline SymbolType BoolSymbol::getSymbolType() {
     return SymbolType::BOOL;
+}
+
+std::string BoolSymbol::getSymbolTypeAsString() {
+    return "bool";
+}
+
+std::string SymbolUtils::getSymbolTypeAsString(const SymbolType &symbolType) {
+    std::string retVal;
+
+    switch(symbolType) {
+        case SymbolType::INT:
+            retVal = "int";
+            break;
+        case SymbolType::FUNCTION:
+            retVal = "function";
+            break;
+        case SymbolType::STRING:
+            retVal = "string";
+            break;
+        case SymbolType::BOOL:
+            retVal = "bool";
+            break;
+        case SymbolType::VOID:
+            retVal = "void";
+            break;
+    }
+
+    return retVal;
+}
+
+bool SymbolUtils::canTypeBeUsedWithRelOp(const SymbolType &symbolType) {
+    bool canDo = false;
+
+    // TODO: modify when new types are added or relops are supported for more types
+    switch(symbolType) {
+        case SymbolType::INT:
+            canDo = true;
+            break;
+        case SymbolType::FUNCTION:
+            canDo = false;
+            break;
+        case SymbolType::STRING:
+            canDo = false;
+            break;
+        case SymbolType::BOOL:
+            canDo = false;
+            break;
+        case SymbolType::VOID:
+            canDo = false;
+            break;
+    }
+    return canDo;
+}
+
+bool SymbolUtils::canTypeBeUsedWithCompOp(const SymbolType &symbolType) {
+    bool canDo = false;
+
+    // TODO: modify when new types are added or relops are supported for more types
+    switch(symbolType) {
+        case SymbolType::INT:
+            canDo = true;
+            break;
+        case SymbolType::FUNCTION:
+            canDo = false;
+            break;
+        case SymbolType::STRING:
+            canDo = true;
+            break;
+        case SymbolType::BOOL:
+            canDo = true;
+            break;
+        case SymbolType::VOID:
+            canDo = false;
+            break;
+    }
+    return canDo;
 }

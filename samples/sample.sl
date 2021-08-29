@@ -19,7 +19,7 @@ introducing main(var1: int, var2: string) {
     bro, sum: int = 1 + 3 * 6;
 
     \\* Loop *\\
-    @blockname while1
+    \\* @blockname while1 *\\
     while (var1 < 4) {
         sum = sum + 1;
     }
@@ -27,8 +27,8 @@ introducing main(var1: int, var2: string) {
     return sum;
 } -> int \\* Return type - void by default *\\
 
-\\ * Function call expression *\\
-\\ bro, res: int = (initCounter, lol) -> main;
+\\* Function call expression *\\
+bro, res: int = (initCounter, lol) -> main;
 
 \\* Function call statement *\\
 (res) -> main;

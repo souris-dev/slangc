@@ -63,6 +63,9 @@ public:
 
 protected:
     std::shared_ptr<SymbolTable> symbolTable;
+
+    template<class T>
+    antlrcpp::Any checkIdentifierTypeInExpr(T *ctx, SymbolType expectedType);
 };
 
 

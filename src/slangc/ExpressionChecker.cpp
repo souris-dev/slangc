@@ -101,3 +101,31 @@ antlrcpp::Any ExpressionChecker::visitFunctionCallNoArgs(SlangGrammarParser::Fun
 antlrcpp::Any ExpressionChecker::checkExpr(SlangGrammarParser::ExprContext *ctx) {
     return false;
 }
+
+template<class T>
+antlrcpp::Any ExpressionChecker::checkIdentifierTypeInExpr(T *ctx, SymbolType expectedType) {
+    // Resolve and return
+
+    auto idName = ctx->IDENTIFIER()->getText();
+    std::shared_ptr<Symbol> symbol = symbolTable->lookup(idName);
+
+    if (symbol == nullptr) {
+        // TODO: throw error and terminate because symbol was not found
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Unknown identifier: " << idName << "." << std::endl;
+        exit(-1);
+    }
+
+    // Perform type checking of the return type of the expression and the identifier
+    if (symbol->isSymbolType(expectedType)) {
+        return true;
+    }
+    else {
+        // TODO: Throw error for wrong type
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "The identifier " << idName << " has a type mismatch with the expected result of the expression. ";
+        std::cerr << "Expected type is " << symbol->getSymbolTypeAsString()
+                    << " but the identifier has a different type. " << std::endl;
+        exit(-1);
+    }
+}

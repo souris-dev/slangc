@@ -56,30 +56,7 @@ antlrcpp::Any IntExpressionChecker::visitExprParen(SlangGrammarParser::ExprParen
 }
 
 antlrcpp::Any IntExpressionChecker::visitExprIdentifier(SlangGrammarParser::ExprIdentifierContext *ctx) {
-    // Resolve and return
-
-    auto idName = ctx->IDENTIFIER()->getText();
-    std::shared_ptr<Symbol> symbol = symbolTable->lookup(idName);
-
-    if (symbol == nullptr) {
-        // TODO: throw error and terminate because symbol was not found
-        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
-        std::cerr << "Unknown identifier: " << idName << "." << std::endl;
-        exit(-1);
-    }
-
-    // Perform type checking of the return type of the expression and the identifier
-    if (symbol->isSymbolType(SymbolType::INT)) {
-        return true;
-    }
-        // TODO: when more datatypes are added, add typechecking for them too
-    else {
-        // TODO: Throw error for wrong type
-        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
-        std::cerr << "The identifier " << idName << " has a type mismatch with the expected result of the expression.";
-        std::cerr << "Expected type is int but the identifier has a different type. " << std::endl;
-        exit(-1);
-    }
+    return checkIdentifierTypeInExpr<SlangGrammarParser::ExprIdentifierContext>(ctx, SymbolType::INT);
 }
 
 antlrcpp::Any IntExpressionChecker::visitExprDecint(SlangGrammarParser::ExprDecintContext *ctx) {
@@ -92,6 +69,9 @@ antlrcpp::Any IntExpressionChecker::visitFunctionCallNoArgs(SlangGrammarParser::
         return true;
     }
     else {
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Expected return type was int but this function call returns "
+                  << SymbolUtils::getSymbolTypeAsString(returnSymbolType) << "." << std::endl;
         return false;
     }
 }
@@ -102,6 +82,9 @@ antlrcpp::Any IntExpressionChecker::visitFunctionCallWithArgs(SlangGrammarParser
         return true;
     }
     else {
+        std::cerr << "[Error, Line " << ctx->IDENTIFIER()->getSymbol()->getLine() << "] ";
+        std::cerr << "Expected return type was int but this function call returns "
+                  << SymbolUtils::getSymbolTypeAsString(returnSymbolType) << "." << std::endl;
         return false;
     }
 }
