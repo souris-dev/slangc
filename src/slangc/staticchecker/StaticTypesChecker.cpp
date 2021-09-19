@@ -269,6 +269,17 @@ antlrcpp::Any StaticTypesChecker::visitBooleanExprAssign(SlangGrammarParser::Boo
 antlrcpp::Any StaticTypesChecker::visitImplicitRetTypeFuncDef(SlangGrammarParser::ImplicitRetTypeFuncDefContext *ctx) {
     auto funcIdName = ctx->IDENTIFIER()->getText();
     auto definedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
+
+    auto existingSymbol = symbolTable->lookup(funcIdName);
+
+    if (existingSymbol != nullptr) {
+        // throw error for redeclaration
+        std::cerr << "[Error, Line " << definedLineNum << "] ";
+        std::cerr << "Identifier " << existingSymbol->name << " was declared before on line " << existingSymbol->firstAppearedLine;
+        std::cerr << "." << std::endl;
+        exit(-1);
+    }
+
     std::vector<std::shared_ptr<Symbol>> paramList =
             parseAndAddFunctionParams<SlangGrammarParser::ImplicitRetTypeFuncDefContext>(ctx);
 
@@ -281,6 +292,17 @@ antlrcpp::Any StaticTypesChecker::visitImplicitRetTypeFuncDef(SlangGrammarParser
 antlrcpp::Any StaticTypesChecker::visitExplicitRetTypeFuncDef(SlangGrammarParser::ExplicitRetTypeFuncDefContext *ctx) {
     auto funcIdName = ctx->IDENTIFIER()->getText();
     auto definedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
+
+    auto existingSymbol = symbolTable->lookup(funcIdName);
+
+    if (existingSymbol != nullptr) {
+        // throw error for redeclaration
+        std::cerr << "[Error, Line " << definedLineNum << "] ";
+        std::cerr << "Identifier " << existingSymbol->name << " was declared before on line " << existingSymbol->firstAppearedLine;
+        std::cerr << "." << std::endl;
+        exit(-1);
+    }
+
     std::vector<std::shared_ptr<Symbol>> paramList =
             parseAndAddFunctionParams<SlangGrammarParser::ExplicitRetTypeFuncDefContext>(ctx);
 
