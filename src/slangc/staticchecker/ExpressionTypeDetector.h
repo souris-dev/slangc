@@ -6,7 +6,7 @@
 #define SLANG_EXPRESSIONTYPEDETECTOR_H
 
 #include "SlangGrammarBaseVisitor.h"
-#include "SymbolTable.h"
+#include "../SymbolTable.h"
 
 
 class ExpressionTypeDetector : SlangGrammarBaseVisitor {

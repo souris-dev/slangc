@@ -6,8 +6,8 @@
 #define SLANG_EXPRESSIONCHECKER_H
 
 #include "SlangGrammarBaseVisitor.h"
-#include "SymbolTable.h"
-#include "Symbol.h"
+#include "../SymbolTable.h"
+#include "../Symbol.h"
 
 class ExpressionChecker : public SlangGrammarBaseVisitor {
 public:

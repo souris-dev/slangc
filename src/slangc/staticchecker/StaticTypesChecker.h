@@ -5,8 +5,8 @@
 #ifndef SLANG_STATICTYPESCHECKER_H
 #define SLANG_STATICTYPESCHECKER_H
 
-#include "../antlrgen/SlangGrammarBaseVisitor.h"
-#include "SymbolTable.h"
+#include "SlangGrammarBaseVisitor.h"
+#include "../SymbolTable.h"
 #include "FunctionCallExprChecker.h"
 
 class StaticTypesChecker : public SlangGrammarBaseVisitor {

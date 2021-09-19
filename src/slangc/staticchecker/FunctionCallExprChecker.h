@@ -5,7 +5,7 @@
 #ifndef SLANG_FUNCTIONCALLEXPRCHECKER_H
 #define SLANG_FUNCTIONCALLEXPRCHECKER_H
 
-#include "SymbolTable.h"
+#include "../SymbolTable.h"
 #include "SlangGrammarBaseVisitor.h"
 #include "IntExpressionChecker.h"
 #include "BoolExpressionChecker.h"

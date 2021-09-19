@@ -4,7 +4,13 @@
 #include "antlr4-runtime.h"
 #include "antlrgen/SlangGrammarLexer.h"
 #include "antlrgen/SlangGrammarParser.h"
-#include "slangc/StaticTypesChecker.h"
+#include "slangc/staticchecker/StaticTypesChecker.h"
+
+#include "llvm/IR/IRBuilder.h"
+#include "llvm/IR/Module.h"
+#include "llvm/IR/LLVMContext.h"
+
+static llvm::LLVMContext &Context = llvm::getGlobalContext();
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -37,4 +43,6 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Dumping table: " << std::endl;
     symbolTablePtr->dump();
+
+    std::cout << "Starting LLVM IR generation..." << std::endl;
 }

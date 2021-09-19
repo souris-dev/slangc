@@ -6,8 +6,8 @@
 #define SLANG_EXPRESSIONEVALUATOR_H
 
 #include "SlangGrammarBaseVisitor.h"
-#include "SymbolTable.h"
-#include "Symbol.h"
+#include "../SymbolTable.h"
+#include "../Symbol.h"
 
 template<class T>
 class ExpressionEvaluator : public SlangGrammarBaseVisitor {
