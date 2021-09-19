@@ -6,6 +6,7 @@
 #define SLANG_SYMBOLTABLE_H
 
 #include <unordered_map>
+#include <map>
 #include <string>
 #include <utility>
 #include <vector>
@@ -23,7 +24,7 @@ private:
 public:
     SymbolTable();
 
-    bool insert(const std::string &name, std::shared_ptr<Symbol> symbol);
+    bool insert(const std::string &name, const std::shared_ptr<Symbol>& symbol);
 
     void incrementScope();
 

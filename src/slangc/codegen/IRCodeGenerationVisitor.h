@@ -6,6 +6,7 @@
 #define SLANG_IRCODEGENERATIONVISITOR_H
 
 #include "SlangGrammarBaseVisitor.h"
+#include "../SymbolTable.h"
 #include "llvm/IR/Module.h"
 #include "llvm/IR/LLVMContext.h"
 #include "llvm/IR/IRBuilder.h"
@@ -15,9 +16,10 @@ class IRCodeGenerationVisitor : public SlangGrammarBaseVisitor {
 private:
     llvm::IRBuilder<> &Builder;
     llvm::Module *ModuleObj;
+    std::shared_ptr<SymbolTable> symbolTable;
 
 public:
-    IRCodeGenerationVisitor(llvm::Module *ModuleObj, llvm::IRBuilder<> &Builder);
+    IRCodeGenerationVisitor(llvm::Module *ModuleObj, llvm::IRBuilder<> &Builder, std::shared_ptr<SymbolTable> symbolTable);
 
     antlrcpp::Any visitProgram(SlangGrammarParser::ProgramContext *ctx) override;
 

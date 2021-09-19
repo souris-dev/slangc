@@ -29,6 +29,16 @@ antlrcpp::Any StaticTypesChecker::visitDeclStmt(SlangGrammarParser::DeclStmtCont
     size_t firstAppearedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
     auto typeNameCtx = ctx->typeName();
 
+    auto existingSymbol = symbolTable->lookup(idName);
+
+    if (existingSymbol != nullptr) {
+        // throw error for redeclaration
+        std::cerr << "[Error, Line " << firstAppearedLineNum << "] ";
+        std::cerr << "Identifier " << existingSymbol->name << " was declared before on line " << existingSymbol->firstAppearedLine;
+        std::cerr << "." << std::endl;
+        exit(-1);
+    }
+
     if (typeNameCtx->BOOLTYPE() != nullptr) {
         std::cout << "Found bool type for id " << idName << std::endl;
         BoolSymbol boolSymbol(idName, firstAppearedLineNum);
@@ -56,6 +66,16 @@ antlrcpp::Any StaticTypesChecker::visitNormalDeclAssignStmt(SlangGrammarParser::
     auto idName = ctx->IDENTIFIER()->getSymbol()->getText();
     size_t firstAppearedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
     auto typeNameCtx = ctx->typeName();
+
+    auto existingSymbol = symbolTable->lookup(idName);
+
+    if (existingSymbol != nullptr) {
+        // throw error for redeclaration
+        std::cerr << "[Error, Line " << firstAppearedLineNum << "] ";
+        std::cerr << "Identifier " << existingSymbol->name << " was declared before on line " << existingSymbol->firstAppearedLine;
+        std::cerr << "." << std::endl;
+        exit(-1);
+    }
 
     if (typeNameCtx->BOOLTYPE() != nullptr) {
         // This should not happen here
@@ -120,6 +140,16 @@ antlrcpp::Any StaticTypesChecker::visitNormalDeclAssignStmt(SlangGrammarParser::
 antlrcpp::Any StaticTypesChecker::visitBooleanDeclAssignStmt(SlangGrammarParser::BooleanDeclAssignStmtContext *ctx) {
     auto idName = ctx->IDENTIFIER()->getSymbol()->getText();
     size_t firstAppearedLineNum = ctx->IDENTIFIER()->getSymbol()->getLine();
+
+    auto existingSymbol = symbolTable->lookup(idName);
+
+    if (existingSymbol != nullptr) {
+        // throw error for redeclaration
+        std::cerr << "[Error, Line " << firstAppearedLineNum << "] ";
+        std::cerr << "Identifier " << existingSymbol->name << " was declared before on line " << existingSymbol->firstAppearedLine;
+        std::cerr << "." << std::endl;
+        exit(-1);
+    }
 
     BoolSymbol boolSymbol(idName, firstAppearedLineNum);
 

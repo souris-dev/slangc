@@ -6,11 +6,12 @@
 #include "antlrgen/SlangGrammarParser.h"
 #include "slangc/staticchecker/StaticTypesChecker.h"
 
+#include "slangc/codegen/IRCodeGenerationVisitor.h"
+
 #include "llvm/IR/IRBuilder.h"
 #include "llvm/IR/Module.h"
-#include "llvm/IR/LLVMContext.h"
 
-static llvm::LLVMContext &Context = llvm::getGlobalContext();
+static llvm::LLVMContext IRGenContext;
 
 int main(int argc, char *argv[]) {
     if (argc < 2) {
@@ -45,4 +46,9 @@ int main(int argc, char *argv[]) {
     symbolTablePtr->dump();
 
     std::cout << "Starting LLVM IR generation..." << std::endl;
+
+    static llvm::IRBuilder<> Builder(IRGenContext);
+    static auto *Module = new llvm::Module("SlangProgram", IRGenContext);
+    IRCodeGenerationVisitor irCodeGenerationVisitor(Module, Builder);
+    irCodeGenerationVisitor.visit(tree);
 }

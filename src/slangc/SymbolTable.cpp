@@ -5,13 +5,13 @@
 #include <iostream>
 #include "SymbolTable.h"
 
-bool SymbolTable::insert(const std::string &name, std::shared_ptr<Symbol> symbol) {
+bool SymbolTable::insert(const std::string &name, const std::shared_ptr<Symbol>& symbol) {
     if (symbolScope[currentScope].count(name) > 0) {
         // Entry exists already so return false
         return false;
     }
 
-    symbolScope[currentScope].insert({name, std::move(symbol)});
+    symbolScope[currentScope].insert({name, symbol});
     return true;
 }
 

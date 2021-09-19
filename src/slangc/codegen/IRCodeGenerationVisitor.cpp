@@ -4,8 +4,9 @@
 
 #include "IRCodeGenerationVisitor.h"
 
-IRCodeGenerationVisitor::IRCodeGenerationVisitor(llvm::Module *ModuleObj, llvm::IRBuilder<> &Builder)
-: ModuleObj(ModuleObj), Builder(Builder) { }
+IRCodeGenerationVisitor::IRCodeGenerationVisitor(llvm::Module *ModuleObj, llvm::IRBuilder<> &Builder,
+                                                 std::shared_ptr<SymbolTable> symbolTable)
+: ModuleObj(ModuleObj), Builder(Builder), symbolTable(symbolTable) { }
 
 antlrcpp::Any IRCodeGenerationVisitor::visitProgram(SlangGrammarParser::ProgramContext *ctx) {
     ModuleObj->setModuleIdentifier("SlangProgram");
