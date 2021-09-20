@@ -338,7 +338,9 @@ std::vector<std::shared_ptr<Symbol>> StaticTypesChecker::parseAndAddFunctionPara
                        auto typeNameCtx = argContext->typeName();
 
                        /* We increment the scope once here and decrement it again after inserting the
-                        * symbols in the parameter list (while not deleting the new scope variables).
+                        * symbols present in the parameter list.
+                        * Not creating a new scope on the next scope increment (when it enters the block)
+                        * preserves the parameters that have been inserted already into the function's scope.
                         * The decrement is necessary because when the compiler enters the block, it will
                         * increment its scope again. We want the parameters to stay. */
 
@@ -347,19 +349,19 @@ std::vector<std::shared_ptr<Symbol>> StaticTypesChecker::parseAndAddFunctionPara
                        if (typeNameCtx->INTTYPE() != nullptr) {
                            IntSymbol intSymbol(idName, definedOnLineNum);
                            this->symbolTable->insert(idName, std::make_shared<IntSymbol>(intSymbol));
-                           this->symbolTable->decrementScope(false); // do not delete the new scope's symbols
+                           this->symbolTable->decrementScope(false); // do not create a new scope entry on next increment
                            return std::make_shared<IntSymbol>(intSymbol);
                        }
                        else if (typeNameCtx->STRINGTYPE() != nullptr) {
                            StringSymbol stringSymbol(idName, definedOnLineNum);
                            this->symbolTable->insert(idName, std::make_shared<StringSymbol>(stringSymbol));
-                           this->symbolTable->decrementScope(false); // do not delete the new scope's symbols
+                           this->symbolTable->decrementScope(false); // do not create a new scope entry on next increment
                            return std::make_shared<StringSymbol>(stringSymbol);
                        }
                        else if (typeNameCtx->BOOLTYPE() != nullptr) {
                            BoolSymbol boolSymbol(idName, definedOnLineNum);
                            this->symbolTable->insert(idName, std::make_shared<BoolSymbol>(boolSymbol));
-                           this->symbolTable->decrementScope(false); // do not delete the new scope's symbols
+                           this->symbolTable->decrementScope(false); // do not create a new scope entry on next increment
                            return std::make_shared<BoolSymbol>(boolSymbol);
                        }
                        else if (typeNameCtx->VOIDTYPE() != nullptr) {

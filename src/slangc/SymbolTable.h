@@ -1,25 +1,36 @@
 //
-// Created by suore on 14-07-2021.
+// Created by suore on 19-09-2021.
 //
 
 #ifndef SLANG_SYMBOLTABLE_H
 #define SLANG_SYMBOLTABLE_H
 
-#include <unordered_map>
-#include <map>
-#include <string>
 #include <utility>
 #include <vector>
-#include <memory>
-
+#include <unordered_map>
+#include <string>
 #include "Symbol.h"
+
+class SymbolTableRecordEntry {
+public:
+    std::shared_ptr<SymbolTableRecordEntry> prevScopeTable;
+    std::unordered_map<std::string, std::shared_ptr<Symbol>> table;
+
+    SymbolTableRecordEntry(std::shared_ptr<SymbolTableRecordEntry> prevScopeTable,
+                           std::unordered_map<std::string, std::shared_ptr<Symbol>> table)
+                           : prevScopeTable(std::move(prevScopeTable)), table(std::move(table)) {};
+
+    explicit SymbolTableRecordEntry(std::shared_ptr<SymbolTableRecordEntry> prevScopeTable)
+                            : prevScopeTable(std::move(prevScopeTable)),
+                              table(std::unordered_map<std::string, std::shared_ptr<Symbol>>()) {};
+};
 
 class SymbolTable {
 private:
-    std::vector<std::unordered_map<std::string, std::shared_ptr<Symbol>>> symbolScope;
-    int currentScope = 0;
-
-    void destroyLastScopeVars();
+    std::vector<std::vector<std::shared_ptr<SymbolTableRecordEntry>>> symbolScope;
+    int currentScopeIndex = 0;
+    std::shared_ptr<SymbolTableRecordEntry> currentSymbolTableRecord;
+    bool createNewScopeEntryOnIncrement = true;
 
 public:
     SymbolTable();
@@ -28,15 +39,11 @@ public:
 
     void incrementScope();
 
-    void decrementScope(bool deleteSymbols = true);
+    void decrementScope(bool createNewScopeEntryOnNextIncrement = true);
 
     void setCurrentScope(const int &scopeVal);
 
     std::shared_ptr<Symbol> lookup(const std::string &name);
-
-    [[maybe_unused]] bool deleteSymbol(const std::string &name);
-
-    [[maybe_unused]] bool modify(const std::string &name, std::shared_ptr<Symbol> replaceByThisSymbol);
 
     [[maybe_unused]] void dump();
 };

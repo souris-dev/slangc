@@ -49,6 +49,6 @@ int main(int argc, char *argv[]) {
 
     static llvm::IRBuilder<> Builder(IRGenContext);
     static auto *Module = new llvm::Module("SlangProgram", IRGenContext);
-    IRCodeGenerationVisitor irCodeGenerationVisitor(Module, Builder);
+    IRCodeGenerationVisitor irCodeGenerationVisitor(Module, Builder, symbolTablePtr);
     irCodeGenerationVisitor.visit(tree);
 }
